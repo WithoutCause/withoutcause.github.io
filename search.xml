@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/07/21/hello-world/</url>
+    <content><![CDATA[<ul>
+<li>加点东西</li>
+</ul>
+<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>http协议</title>
+    <url>/2021/07/21/http%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<p>[TOC]</p>
+<span id="more"></span>
+<h1 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h1><h2 id="客户端-Client"><a href="#客户端-Client" class="headerlink" title="客户端(Client)"></a>客户端(Client)</h2><ul>
+<li>发起 <code>http</code> 请求的一方称为<code>客户端</code>，一般是<code>浏览器</code>，比如常见的 <code>Chrome</code>、<code>360浏览器</code>、<code>MicroSoft Edge</code>、<code>Safair浏览器</code> 等；除了浏览器还有一些能够发起 http 请求的软件，比如: <code>postman</code>、<code>Jmeter</code> 等。</li>
+</ul>
+<h2 id="服务端-Server"><a href="#服务端-Server" class="headerlink" title="服务端(Server)"></a>服务端(Server)</h2><ul>
+<li>提供 <code>http</code> 服务的一方称为 <code>服务端</code>，一般是各种 <code>Web服务器</code>。</li>
+</ul>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/epub_907764_17.jpeg"></p>
+<blockquote>
+<p>http 请求是请求-响应模式，也就是一发出一次请求，会收到一次应签。</p>
+</blockquote>
+<h2 id="客户端和服务端通信"><a href="#客户端和服务端通信" class="headerlink" title="客户端和服务端通信"></a>客户端和服务端通信</h2><ul>
+<li>HTTP协议规定，请求从客户端发出，最后服务器端响应该请求并返回。先从客户端开始建立通信的，服务器端在没有接收到请求之前不会发送响应。</li>
+</ul>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%9A%E4%BF%A1.jpeg" alt="img"></p>
+<h2 id="请求报文"><a href="#请求报文" class="headerlink" title="请求报文"></a>请求报文</h2><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/index.html</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>请求报文是由请求方法、请求URI、协议版本、可选的请求首部字段和内容实体构成的。</li>
+</ul>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E8%AF%B7%E6%B1%82%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5.jpeg" alt="img"></p>
+<h2 id="响应报文"><a href="#响应报文" class="headerlink" title="响应报文"></a>响应报文</h2><figure class="highlight http"><table><tr><td class="code"><pre><span class="line">HTTP/1.1200 OK</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Tue, 10 Jul 2012 06:50:15 GMT</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>362</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>text/html</span><br><span class="line">&lt;html&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E5%93%8D%E5%BA%94%E4%BD%93.jpeg" alt="img"></p>
+<ul>
+<li>响应报文基本上由协议版本、状态码（表示请求成功或失败的数字代码）、用以解释状态码的原因短语、可选的响应首部字段以及实体主体构成。稍后我们会对这些内容进行详细说明。</li>
+</ul>
+<h2 id="http无状态"><a href="#http无状态" class="headerlink" title="http无状态"></a>http无状态</h2><ul>
+<li>HTTP协议自身不对请求和响应之间的通信状态进行保存。也就是说在HTTP这个级别，协议对于发送过的请求或响应都不做持久化处理。</li>
+</ul>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/http%E5%8D%8F%E8%AE%AE%E6%97%A0%E7%8A%B6%E6%80%81.jpeg" alt="img"></p>
+<h1 id="HTTP-协议报文"><a href="#HTTP-协议报文" class="headerlink" title="HTTP 协议报文"></a>HTTP 协议报文</h1>]]></content>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+</search>
