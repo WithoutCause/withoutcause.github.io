@@ -61,4 +61,12 @@
         <tag>http</tag>
       </tags>
   </entry>
+  <entry>
+    <title>test</title>
+    <url>/2021/07/21/test/</url>
+    <content><![CDATA[<h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><ul>
+<li>随便写点东西。</li>
+</ul>
+]]></content>
+  </entry>
 </search>
