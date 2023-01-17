@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Pod是什么 Pod 是 K8s 的最小运行单元。 是所有应用的载体，包含一个或多个容器(这里的容器可以不是 Docker)。  Pod 定义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自学k8s系列~04之Pod">
+<meta property="og:url" content="https://withoutcause.github.io/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="Pod是什么 Pod 是 K8s 的最小运行单元。 是所有应用的载体，包含一个或多个容器(这里的容器可以不是 Docker)。  Pod 定义">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E4%B8%8E%E5%AE%B9%E5%99%A8.jpg">
+<meta property="article:published_time" content="2021-08-27T16:27:54.000Z">
+<meta property="article:modified_time" content="2021-08-27T16:27:54.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E4%B8%8E%E5%AE%B9%E5%99%A8.jpg">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/","path":"2021/08/28/自学k8s系列-04之Pod/","title":"自学k8s系列~04之Pod"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自学k8s系列~04之Pod | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">Pod是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod-%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">Pod 定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">Pod 的基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod-%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.</span> <span class="nav-text">Pod 创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod-%E7%8A%B6%E6%80%81%E6%9F%A5%E7%9C%8B"><span class="nav-number">3.2.</span> <span class="nav-text">Pod 状态查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod-%E6%9B%B4%E6%96%B0"><span class="nav-number">3.3.</span> <span class="nav-text">Pod 更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod-%E5%88%A0%E9%99%A4"><span class="nav-number">3.4.</span> <span class="nav-text">Pod 删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BPod%E8%A7%A3%E6%9E%90"><span class="nav-number">3.5.</span> <span class="nav-text">查看Pod解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NAME"><span class="nav-number">3.5.1.</span> <span class="nav-text">NAME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#READY"><span class="nav-number">3.5.2.</span> <span class="nav-text">READY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STATUS"><span class="nav-number">3.5.3.</span> <span class="nav-text">STATUS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTARTS"><span class="nav-number">3.5.4.</span> <span class="nav-text">RESTARTS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AGE"><span class="nav-number">3.5.5.</span> <span class="nav-text">AGE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E4%B8%8E%E5%AE%B9%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">Pod与容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%95%9C%E5%83%8F"><span class="nav-number">5.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Always"><span class="nav-number">5.1.</span> <span class="nav-text">Always</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Never"><span class="nav-number">5.2.</span> <span class="nav-text">Never</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IfNotPresent"><span class="nav-number">5.3.</span> <span class="nav-text">IfNotPresent</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E5%85%B1%E4%BA%ABVolume"><span class="nav-number">6.</span> <span class="nav-text">Pod共享Volume</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E7%9A%84%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">Pod的配置管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigMap"><span class="nav-number">7.1.</span> <span class="nav-text">ConfigMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigMap%E7%9A%84%E4%BF%9D%E5%AD%98%E5%BD%A2%E5%BC%8F"><span class="nav-number">7.2.</span> <span class="nav-text">ConfigMap的保存形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigMap%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">7.3.</span> <span class="nav-text">ConfigMap的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BConfigMap"><span class="nav-number">7.4.</span> <span class="nav-text">查看ConfigMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8Pod%E4%B8%AD%E4%BD%BF%E7%94%A8ConfigMap"><span class="nav-number">7.5.</span> <span class="nav-text">在Pod中使用ConfigMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87Volume%E4%BD%BF%E7%94%A8ConfigMap"><span class="nav-number">7.6.</span> <span class="nav-text">通过Volume使用ConfigMap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5"><span class="nav-number">8.</span> <span class="nav-text">Pod的生命周期和重启策略</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">8.1.</span> <span class="nav-text">Pod的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod%E7%9A%84%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5"><span class="nav-number">8.2.</span> <span class="nav-text">Pod的重启策略</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自学k8s系列~04之Pod | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自学k8s系列~04之Pod
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-28 00:27:54" itemprop="dateCreated datePublished" datetime="2021-08-28T00:27:54+08:00">2021-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Pod是什么"><a href="#Pod是什么" class="headerlink" title="Pod是什么"></a>Pod是什么</h1><ul>
+<li><code>Pod</code> 是 <code>K8s</code> 的最小运行单元。</li>
+<li>是所有应用的载体，包含一个或多个容器(这里的容器可以不是 Docker)。</li>
+</ul>
+<h1 id="Pod-定义"><a href="#Pod-定义" class="headerlink" title="Pod 定义"></a>Pod 定义</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>              <span class="string">//需要</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span>                    <span class="string">//需要</span></span><br><span class="line"><span class="attr">metadata:</span>                    <span class="string">//需要</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">string</span>           <span class="string">//需要</span></span><br><span class="line">  <span class="attr">namaspace:</span> <span class="string">string</span>      <span class="string">//需要</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line"><span class="attr">spec:</span>                      <span class="string">//需要</span></span><br><span class="line">  <span class="attr">containers:</span>             <span class="string">//需要</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span>         <span class="string">//需要</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">string</span>    <span class="string">//需要</span></span><br><span class="line">  <span class="attr">imagePullPolice:</span> [<span class="string">Always</span> <span class="string">|</span> <span class="string">Never</span> <span class="string">|</span> <span class="string">IfNotPresent</span>]</span><br><span class="line">  <span class="attr">command:</span> [<span class="string">string</span>]</span><br><span class="line">  <span class="attr">args:</span> [<span class="string">string</span>]</span><br><span class="line">  <span class="attr">workingDir:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">volumeMounts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">readOnly:</span> <span class="string">boolean</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">containerPort:</span> <span class="string">int</span></span><br><span class="line">      <span class="attr">hostPort:</span> <span class="string">int</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">env:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">value:</span> <span class="string">string</span></span><br><span class="line"><span class="attr">resources:</span></span><br><span class="line">  <span class="attr">limits:</span></span><br><span class="line">    <span class="attr">cpu:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">memory:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">requests:</span></span><br><span class="line">    <span class="attr">cpu:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">memory:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">livenessProbe:</span></span><br><span class="line">    <span class="attr">exec:</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">string</span>]</span><br><span class="line">    <span class="attr">httpGet:</span></span><br><span class="line">      <span class="attr">path:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">port:</span> <span class="string">int</span></span><br><span class="line">      <span class="attr">host:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">scheme:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">httpHeaders:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">        <span class="attr">value:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">tcpSocket:</span></span><br><span class="line">      <span class="attr">port:</span> <span class="string">int</span></span><br><span class="line">    <span class="attr">initialDelaySeconds:</span> <span class="string">number</span></span><br><span class="line">    <span class="attr">timeoutSeconds:</span> <span class="string">number</span></span><br><span class="line">    <span class="attr">periodSeconds:</span> <span class="string">number</span></span><br><span class="line">    <span class="attr">successThreshold:</span> <span class="number">0</span></span><br><span class="line">    <span class="attr">failureThreshold:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">securityContext:</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">RestartPolicy:</span> [<span class="string">Always</span> <span class="string">|</span> <span class="string">Never</span> <span class="string">|</span> <span class="string">OnFailure</span>]</span><br><span class="line"><span class="attr">nodeSelector:</span> <span class="string">object</span></span><br><span class="line"><span class="attr">imagePullSecrets:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line"><span class="attr">hostNetwork:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">emptyDir:</span> &#123;&#125;</span><br><span class="line">      <span class="attr">hostPath:</span></span><br><span class="line">        <span class="attr">path:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">secret:</span></span><br><span class="line">        <span class="attr">secretName:</span> <span class="string">string</span></span><br><span class="line">        <span class="attr">items:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">string</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">string</span></span><br><span class="line">        <span class="attr">configMap:</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">          <span class="attr">items:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">string</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">string</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Pod-的基本操作"><a href="#Pod-的基本操作" class="headerlink" title="Pod 的基本操作"></a>Pod 的基本操作</h1><p>Pod 等于 Docker 吗？答案是不等于。Docker 运行在 <code>Pod</code> 中，但是 <code>Pod</code> 可以运行的不仅仅是 Docker, 其他容器也可以。比如:  <code>RKT</code> 或者 <code>Podman</code> 都可以在 <code>Pod</code> 中运行。其次，<code>Pod</code> 中的容器也可以有多少。这一点类似于 Docker 中的容器互联。</p>
+<h2 id="Pod-创建"><a href="#Pod-创建" class="headerlink" title="Pod 创建"></a>Pod 创建</h2><p><code>Pod</code> 的主程序需要一直处于前台运行的状态，否则 <code>Pod</code> 就会将期销毁，这一点跟 <code>Docker</code> 很像。例如: 执行的是 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup ./start.sh &amp;</span><br></pre></td></tr></table></figure>
+
+<p><code>Pod</code> 在执行完该命令后，就会将 <code>Pod</code> 销毁。而我们的目的是期望能够后台运行，这就违背了我们的目的。正确做法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./start.sh</span><br></pre></td></tr></table></figure>
+
+<p>这样该应用就会一直前台运行， <code>Pod</code> 就会一直存在。</p>
+<ul>
+<li>命令方式</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建 Pod 指定 namespace 名称为 sjl</span></span><br><span class="line">kubectl create pod podName -n sjl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>yaml 方式</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">podName</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">sjl</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">nginx:1.19.7</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Pod-状态查看"><a href="#Pod-状态查看" class="headerlink" title="Pod 状态查看"></a>Pod 状态查看</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有的 pod</span></span><br><span class="line">kubectl get pods</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看指定 name 的 pod</span></span><br><span class="line">kubectl get pod podName</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pod-更新"><a href="#Pod-更新" class="headerlink" title="Pod 更新"></a>Pod 更新</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl replace pod</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pod-删除"><a href="#Pod-删除" class="headerlink" title="Pod 删除"></a>Pod 删除</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod podName</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看Pod解析"><a href="#查看Pod解析" class="headerlink" title="查看Pod解析"></a>查看Pod解析</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看指定 name 的 pod</span></span><br><span class="line">kubectl get pod podName</span><br></pre></td></tr></table></figure>
+
+<p><code>Pod</code> 显示的内容如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-59f854fb7c-vlkhj   1/1     Running   1          2d23h</span><br></pre></td></tr></table></figure>
+
+<h3 id="NAME"><a href="#NAME" class="headerlink" title="NAME"></a>NAME</h3><p><code>POD</code> 的名称。</p>
+<h3 id="READY"><a href="#READY" class="headerlink" title="READY"></a>READY</h3><p>显示 <code>Pod</code> 的容器信息，以 <code>/</code> 分隔成左右两边，左边是就绪的容器，右边是 <code>Pod</code> 包含的总容器。一般是一个 <code>Pod</code> 一个容器，但是也是例外的情况，一个 <code>Pod</code> 包含多个容器。</p>
+<h3 id="STATUS"><a href="#STATUS" class="headerlink" title="STATUS"></a>STATUS</h3><p>当前 <code>Pod</code> 的状态。</p>
+<h3 id="RESTARTS"><a href="#RESTARTS" class="headerlink" title="RESTARTS"></a>RESTARTS</h3><p><code>Pod</code> 的重启次数。</p>
+<h3 id="AGE"><a href="#AGE" class="headerlink" title="AGE"></a>AGE</h3><p><code>Pod</code> 的运行时间。</p>
+<h1 id="Pod与容器"><a href="#Pod与容器" class="headerlink" title="Pod与容器"></a>Pod与容器</h1><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E4%B8%8E%E5%AE%B9%E5%99%A8.jpg" alt="Pod与容器"></p>
+<p>在 k8s 中， <code>Pod</code> 是最小的单元体。 <code>Pod</code> 中可以运行一个或多个容器，这个容器可以是 <code>Docker</code> 也可以是其他容器。当然，我们最常用的还是 <code>Docker</code> 容器。</p>
+<h1 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h1><p><code>Pod</code> 被高度到某一台 <code>Node</code> 后，会下载对应的镜像，镜像版本等信息由 <code>image</code> 指定，具体的镜像下载策略</p>
+<p>k8s 中的镜像下载策略由 <code>imagePullPolice</code> 指定，下载策略包含以下三种:   </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">imagePullPolice:</span> [<span class="string">Always</span> <span class="string">|</span> <span class="string">Never</span> <span class="string">|</span> <span class="string">IfNotPresent</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Always"><a href="#Always" class="headerlink" title="Always"></a>Always</h2><p>每次都下载最新镜像。</p>
+<h2 id="Never"><a href="#Never" class="headerlink" title="Never"></a>Never</h2><p>只使用本地镜像，不下载。</p>
+<h2 id="IfNotPresent"><a href="#IfNotPresent" class="headerlink" title="IfNotPresent"></a>IfNotPresent</h2><p>当本地没有时，才下载新镜像。</p>
+<h1 id="Pod共享Volume"><a href="#Pod共享Volume" class="headerlink" title="Pod共享Volume"></a>Pod共享Volume</h1><p>部署 <code>Pod</code> yaml 配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">volume-pod</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">tomcat</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">tomcat:9.0.0</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span></span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">app-logs</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">/usr/local/tomcat/logs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">busybox</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">      <span class="attr">command:</span> [<span class="string">&quot;sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;tail -f /logs/catalina*.log&quot;</span>]</span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">app-logs</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">/logs</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">app-logs</span></span><br><span class="line">    <span class="attr">emptyDir:</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//todo 实验未成功， pod 没有正常启动。</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Pod的配置管理"><a href="#Pod的配置管理" class="headerlink" title="Pod的配置管理"></a>Pod的配置管理</h1><h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>kubernetes 提供了一种统一的配置管理方案——<code>ConfigMap</code> 。</p>
+<p><code>ConfigMap</code> 的常用方式:</p>
+<ul>
+<li> 生成为容器内的环境变量。</li>
+<li>设置容器的启动命令启动参数（需要设置为环境变量）。</li>
+<li>以 <code>Volume</code> 的形式挂载为容器内的文件或目录。</li>
+</ul>
+<h2 id="ConfigMap的保存形式"><a href="#ConfigMap的保存形式" class="headerlink" title="ConfigMap的保存形式"></a>ConfigMap的保存形式</h2><ul>
+<li>key: value</li>
+<li>vlue 可以是一个完整的配置文件</li>
+</ul>
+<h2 id="ConfigMap的创建"><a href="#ConfigMap的创建" class="headerlink" title="ConfigMap的创建"></a>ConfigMap的创建</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="attr">key:</span> <span class="string">zhangsan</span></span><br></pre></td></tr></table></figure>
+
+<p>执行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./pod_configmap.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看ConfigMap"><a href="#查看ConfigMap" class="headerlink" title="查看ConfigMap"></a>查看ConfigMap</h2><ul>
+<li>查看 <code>ConfigMap</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get configmap</span><br></pre></td></tr></table></figure>
+
+<p>展示内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NAME               DATA   AGE</span><br><span class="line">kube-root-ca.crt   1      175d</span><br><span class="line">pod-configmap      1      7m54s</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看 <code>ConfigMap</code> 详情信息</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe configmap pod-configmap</span><br></pre></td></tr></table></figure>
+
+<p>展示内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Name:         pod-configmap</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  &lt;none&gt;</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">key:</span><br><span class="line">----</span><br><span class="line">张三</span><br><span class="line">Events:  &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="在Pod中使用ConfigMap"><a href="#在Pod中使用ConfigMap" class="headerlink" title="在Pod中使用ConfigMap"></a>在Pod中使用ConfigMap</h2><ul>
+<li>ConfigMap </li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cm-appvars</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="attr">apploglevel:</span> <span class="string">INFO</span></span><br><span class="line">  <span class="attr">appdatadir:</span> <span class="string">/var/data</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Pod</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap-apply</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">pod-configmap-apply</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;env|grep APP&quot;</span>] <span class="comment">#启动时执行该命令</span></span><br><span class="line">    <span class="attr">env:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">APPLOGLEVEL</span> <span class="comment">#定义环境变量的名称</span></span><br><span class="line">      <span class="attr">valueFrom:</span></span><br><span class="line">        <span class="attr">configMapKeyRef:</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">cm-appvars</span>  <span class="comment">#环境变量的值取自 cm-appvars</span></span><br><span class="line">          <span class="attr">key:</span> <span class="string">apploglevel</span>  <span class="comment">#取的 key 为 apploglevel</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">APPDATADIR</span>      <span class="comment">#定义 APPDATADIR 环境变量</span></span><br><span class="line">      <span class="attr">valueFrom:</span></span><br><span class="line">        <span class="attr">configMapKeyRef:</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">cm-appvars</span>   <span class="comment">#环境变量的值取自 cm-appvars</span></span><br><span class="line">          <span class="attr">key:</span> <span class="string">appdatadir</span>     <span class="comment">#取的 key 为 appdatadir</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建 ConfigMap 和 Pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建 ConfigMap</span></span><br><span class="line">kubectl apply -f ./pod_configmap.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建 Pod</span></span><br><span class="line">kubectl apply -f ./pod_configmap_apply.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看日志</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 Pod</span></span><br><span class="line">kubectl get pods</span><br><span class="line"></span><br><span class="line">NAME                  READY   STATUS      RESTARTS   AGE</span><br><span class="line">pod-configmap-apply   0/1     Completed   0          7m32s</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 Pod 名为 pod-configmap-apply 的日志</span></span><br><span class="line">kubectl logs pod-configmap-apply</span><br><span class="line"></span><br><span class="line">APPDATADIR=/var/data</span><br><span class="line">APPLOGLEVEL=INFO</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用 envFrom 创建环境变量</p>
+<ul>
+<li>使用 envFrom 创建 Pod</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap-apply-envfrom</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">cm-test</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;env&quot;</span>]</span><br><span class="line">    <span class="attr">envFrom:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">configMapRef:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">cm-appvars</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动 Pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./pod_configmap_apply_envfrom.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看 Pod 日志</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">kubectl logs pod-configmap-apply-envfrom</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在显示的内容中可以看到，我们在 ConfigMap 中设置的两个变量 apploglevel 和 appdatadir 已经加入进来了</span></span><br><span class="line">apploglevel=INFO</span><br><span class="line">KUBERNETES_SERVICE_PORT=443</span><br><span class="line">KUBERNETES_PORT=tcp://10.96.0.1:443</span><br><span class="line">HOSTNAME=pod-configmap-apply-envfrom</span><br><span class="line">SHLVL=1</span><br><span class="line">HOME=/root</span><br><span class="line">KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">KUBERNETES_PORT_443_TCP_PORT=443</span><br><span class="line">KUBERNETES_PORT_443_TCP_PROTO=tcp</span><br><span class="line">appdatadir=/var/data</span><br><span class="line">KUBERNETES_SERVICE_PORT_HTTPS=443</span><br><span class="line">KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443</span><br><span class="line">KUBERNETES_SERVICE_HOST=10.96.0.1</span><br><span class="line">PWD=/</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过Volume使用ConfigMap"><a href="#通过Volume使用ConfigMap" class="headerlink" title="通过Volume使用ConfigMap"></a>通过Volume使用ConfigMap</h2><ul>
+<li>ConfigMap 配置</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap-volume</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="comment"># 在 applicationContextXml 放的是整个 xml 文件的配置</span></span><br><span class="line">  <span class="attr">applicationContextXml:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="string">    &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span></span><br><span class="line"><span class="string">          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line"><span class="string">          xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans</span></span><br><span class="line"><span class="string">          http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span></span><br><span class="line"><span class="string">          default-autowire=&quot;byName&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;!--</span></span><br><span class="line"><span class="string">            注意上面的default-autowire=&quot;byName&quot;，如果没有这个声明不会被注入</span></span><br><span class="line"><span class="string">        --&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">        <span class="string">&lt;description&gt;Spring-database配置&lt;/description&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="string">&lt;bean</span> <span class="string">id=&quot;aliyunIntranetStorage&quot;</span> <span class="string">class=&quot;com.olymtech.aliyun.client.oss.AliyunStorageImpl&quot;&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessID&quot;</span> <span class="string">value=&quot;$&#123;oss.accessID&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessKey&quot;</span> <span class="string">value=&quot;$&#123;oss.accessKey&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;ossEndpoint&quot;</span> <span class="string">value=&quot;$&#123;oss.ossIntranetEndpoint&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;bucketName&quot;</span> <span class="string">value=&quot;$&#123;oss.bucketName&#125;&quot;/&gt;</span></span><br><span class="line">        <span class="string">&lt;/bean&gt;</span></span><br><span class="line">        <span class="string">&lt;bean</span> <span class="string">id=&quot;aliyunStorage&quot;</span> <span class="string">class=&quot;com.olymtech.aliyun.client.oss.AliyunStorageImpl&quot;&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessID&quot;</span> <span class="string">value=&quot;$&#123;oss.accessID&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessKey&quot;</span> <span class="string">value=&quot;$&#123;oss.accessKey&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;ossEndpoint&quot;</span> <span class="string">value=&quot;$&#123;oss.ossEndpoint&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;bucketName&quot;</span> <span class="string">value=&quot;$&#123;oss.bucketName&#125;&quot;/&gt;</span></span><br><span class="line">        <span class="string">&lt;/bean&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="string">&lt;bean</span> <span class="string">id=&quot;ediAliyunIntranetStorage&quot;</span> <span class="string">class=&quot;com.olymtech.aliyun.client.oss.AliyunStorageImpl&quot;&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessID&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.accessID&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessKey&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.accessKey&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;ossEndpoint&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.ossIntranetEndpoint&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;bucketName&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.bucketName&#125;&quot;/&gt;</span></span><br><span class="line">        <span class="string">&lt;/bean&gt;</span></span><br><span class="line">        <span class="string">&lt;bean</span> <span class="string">id=&quot;ediAliyunStorage&quot;</span> <span class="string">class=&quot;com.olymtech.aliyun.client.oss.AliyunStorageImpl&quot;&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessID&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.accessID&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;accessKey&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.accessKey&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;ossEndpoint&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.ossEndpoint&#125;&quot;/&gt;</span></span><br><span class="line">            <span class="string">&lt;property</span> <span class="string">name=&quot;bucketName&quot;</span> <span class="string">value=&quot;$&#123;oss-edi.bucketName&#125;&quot;/&gt;</span></span><br><span class="line">        <span class="string">&lt;/bean&gt;</span></span><br><span class="line">    <span class="string">&lt;/beans&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Pod 配置</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap-volume-apply</span>    <span class="comment"># 指定Pod名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">pod-configmap-volume-apply</span> <span class="comment"># 容器名称</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">tomcat</span>  <span class="comment">#指定容器镜像</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span></span><br><span class="line">    <span class="attr">volumeMounts:</span> <span class="comment">#配置挂载</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">applicationcontextxml</span> <span class="comment">#x</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">/configfiles</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">applicationcontextxml</span></span><br><span class="line">    <span class="attr">configMap:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">pod-configmap-volume</span></span><br><span class="line">      <span class="attr">items:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">applicationContextXml</span></span><br><span class="line">        <span class="attr">path:</span> <span class="string">applicationContext.xml</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>验证结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 部署 ConfigMap</span></span><br><span class="line">kubectl apply -f ./pod_configmap_volume.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 部署 Pod</span></span><br><span class="line">kubectl apply -f ./pod_configmap_volume_apply.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看日志</span></span><br><span class="line">kubectl get pods</span><br><span class="line"></span><br><span class="line">NAME                          READY   STATUS      RESTARTS   AGE</span><br><span class="line">pod-configmap-volume-apply    1/1     Running     0          4m49s</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果 READY 是 0/1 多执行几次 kubectl get pos, pod 还没启动成功</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入 pod 查看目录</span></span><br><span class="line">kubectl exec -it pod-configmap-volume-apply -- bash</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 前面是进入 pod 的默认目录，而配置挂载在 / 目录下</span></span><br><span class="line">root@pod-configmap-volume-apply:/usr/local/tomcat# ls /</span><br><span class="line">bin  boot  configfiles	dev  etc  home	lib  lib64  media  mnt	opt  proc  root  run  sbin  srv  sys  tmp  usr	var</span><br><span class="line"><span class="meta">#</span><span class="bash">可以看到，有一个 configfiles 目录</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">进入 configfiles 查看是否存在 applicationContext.xml</span></span><br><span class="line">root@pod-configmap-volume-apply:/usr/local/tomcat# cd /configfiles/</span><br><span class="line"></span><br><span class="line">root@pod-configmap-volume-apply:/configfiles# ls</span><br><span class="line">applicationContext.xml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以看到，出现了 applicationContext.xml</span></span><br><span class="line"></span><br><span class="line">root@pod-configmap-volume-apply:/configfiles# cat applicationContext.xml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 applicationContext.xml 的内容</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Pod的生命周期和重启策略"><a href="#Pod的生命周期和重启策略" class="headerlink" title="Pod的生命周期和重启策略"></a>Pod的生命周期和重启策略</h1><h2 id="Pod的生命周期"><a href="#Pod的生命周期" class="headerlink" title="Pod的生命周期"></a>Pod的生命周期</h2><p><code>Pod</code> 的生命周期被定义为各种状态， <code>Pod</code> 的状态有五种分别是：<code>Pending</code> 、<code>Running</code> 、<code>Successed</code> 、<code>Failed</code> 、<code>Unknown</code> 。</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pending</td>
+<td>等待，Pod 已经创建，但是Pod内的容器或者镜像还没创建。</td>
+</tr>
+<tr>
+<td>Running</td>
+<td>运行中,Pod 内所有容器均已创建，正在运行中。</td>
+</tr>
+<tr>
+<td>Successed</td>
+<td>执行成功，该状态表示 Pod 已经执行成功并退出，且不会重启容器。</td>
+</tr>
+<tr>
+<td>Failed</td>
+<td>执行失败，该状态表示 Pod 已经退出，但是至少有一个容器为失败状态。</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td>未知，无法获取到 Pod 的正确状态，这种情况一般是网络故障。</td>
+</tr>
+</tbody></table>
+<h2 id="Pod的重启策略"><a href="#Pod的重启策略" class="headerlink" title="Pod的重启策略"></a>Pod的重启策略</h2><p><code>Pod</code> 的重启策略应用于 <code>Pod</code> 内的所有容器，并且仅在 <code>Pod</code> 所处的 <code>Node</code> 上由 kubelet 进行判断和重启操作。当某个容器异常退出或者健康检查失败时，kubelet 将根据 RestartPolicy 配置的重启策略进行相应的处理。</p>
+<p><code>Pod</code> 的重启策略主要有三种，分别是: <code>Always</code> 、<code>OnFailure</code> 、<code>Never</code> 。</p>
+<table>
+<thead>
+<tr>
+<th>配置值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Always</td>
+<td>当容器失效时，由 kubelet 自动重启该容器。<strong>默认值</strong>。</td>
+</tr>
+<tr>
+<td>OnFailure</td>
+<td>当容器终止运行，且退出状态码不为 0 时， kubelet 自动重启该容器。</td>
+</tr>
+<tr>
+<td>Never</td>
+<td>无论处于何种状态，kubelet 都不会重启该容器。</td>
+</tr>
+</tbody></table>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-configmap-apply-envfrom</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">cm-test</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;env&quot;</span>]</span><br><span class="line">    <span class="attr">envFrom:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">configMapRef:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">cm-appvars</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span> <span class="comment">#手动配置该 Pod 的重启策略为 Never</span></span><br></pre></td></tr></table></figure>
+
+<p>Pod 的健康检查，扩缩容，滚动更新以及回滚后面再专门的记录。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/26/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-03%E4%B9%8BYAML/" rel="prev" title="自学k8s系列~03之YAML">
+                  <i class="fa fa-chevron-left"></i> 自学k8s系列~03之YAML
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/" rel="next" title="自学k8s系列~05之Service">
+                  自学k8s系列~05之Service <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

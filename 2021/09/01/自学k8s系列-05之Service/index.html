@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Service作用 Service 通过 label 将 Pod 聚合起来。 为这一组 Pod 提供统一的访问入口(IP和域名)。 将访问的请求负载到 Pod 上。  Pod 是容器的载体本身是不稳定的，但是 Service 是稳定的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自学k8s系列~05之Service">
+<meta property="og:url" content="https://withoutcause.github.io/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="Service作用 Service 通过 label 将 Pod 聚合起来。 为这一组 Pod 提供统一的访问入口(IP和域名)。 将访问的请求负载到 Pod 上。  Pod 是容器的载体本身是不稳定的，但是 Service 是稳定的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Service%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E6%9C%8D%E5%8A%A1.jpg">
+<meta property="article:published_time" content="2021-09-01T14:54:59.000Z">
+<meta property="article:modified_time" content="2021-09-01T14:54:59.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Service%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E6%9C%8D%E5%8A%A1.jpg">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/","path":"2021/09/01/自学k8s系列-05之Service/","title":"自学k8s系列~05之Service"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自学k8s系列~05之Service | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Service%E4%BD%9C%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Service作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Service%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">Service定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Service%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">Service的基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Service%E7%9A%84%E8%AE%BF%E9%97%AE"><span class="nav-number">3.1.</span> <span class="nav-text">Service的访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service%E8%B4%9F%E8%BD%BD%E7%AD%96%E7%95%A5"><span class="nav-number">3.2.</span> <span class="nav-text">Service负载策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service%E5%A4%9A%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.3.</span> <span class="nav-text">Service多端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E6%9C%8D%E5%8A%A1Service"><span class="nav-number">3.4.</span> <span class="nav-text">外部服务Service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%A4%96%E8%AE%BF%E9%97%AEService"><span class="nav-number">4.</span> <span class="nav-text">集群外访问Service</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86Pod%E7%9A%84%E7%AB%AF%E5%8F%A3%E5%8F%B7%E6%98%A0%E5%B0%84%E5%88%B0%E5%AE%BF%E4%B8%BB%E6%9C%BA"><span class="nav-number">4.1.</span> <span class="nav-text">将Pod的端口号映射到宿主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84"><span class="nav-number">4.1.1.</span> <span class="nav-text">端口映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEhostNetwork"><span class="nav-number">4.1.2.</span> <span class="nav-text">设置hostNetwork</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86Service%E7%9A%84%E7%AB%AF%E5%8F%A3%E5%8F%B7%E6%98%A0%E5%B0%84%E5%88%B0%E5%AE%BF%E4%B8%BB%E6%9C%BA"><span class="nav-number">4.2.</span> <span class="nav-text">将Service的端口号映射到宿主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%A0%E5%B0%84Service%E7%AB%AF%E5%8F%A3"><span class="nav-number">4.2.1.</span> <span class="nav-text">映射Service端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-LoadBalancer"><span class="nav-number">4.2.2.</span> <span class="nav-text">设置 LoadBalancer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">DNS服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ingress-HTTP-7%E5%B1%82%E8%B7%AF%E7%94%B1"><span class="nav-number">6.</span> <span class="nav-text">Ingress: HTTP 7层路由</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自学k8s系列~05之Service | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自学k8s系列~05之Service
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-01 22:54:59" itemprop="dateCreated datePublished" datetime="2021-09-01T22:54:59+08:00">2021-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Service作用"><a href="#Service作用" class="headerlink" title="Service作用"></a>Service作用</h1><ul>
+<li>Service 通过 <code>label</code> 将 <code>Pod</code> 聚合起来。</li>
+<li>为这一组 <code>Pod</code> 提供统一的访问入口(IP和域名)。</li>
+<li>将访问的请求负载到 <code>Pod</code> 上。</li>
+</ul>
+<p><code>Pod</code> 是容器的载体本身是不稳定的，但是 <code>Service</code> 是稳定的。</p>
+<h1 id="Service定义"><a href="#Service定义" class="headerlink" title="Service定义"></a>Service定义</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="attr">apiVersion:</span> <span class="string">v1</span>             <span class="comment"># Required</span></span><br><span class="line"> <span class="attr">kind:</span> <span class="string">Service</span>              <span class="comment"># Required</span></span><br><span class="line"> <span class="attr">metadata:</span>                  <span class="comment"># Required</span></span><br><span class="line">   <span class="attr">name:</span> <span class="string">string</span>             <span class="comment"># Required</span></span><br><span class="line">   <span class="attr">namespace:</span> <span class="string">string</span>        <span class="comment"># Required</span></span><br><span class="line">   <span class="attr">labels:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">   <span class="attr">annotations:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line"><span class="attr">spec:</span>                        <span class="comment"># Required</span></span><br><span class="line">  <span class="attr">selector:</span> []              <span class="comment"># Required</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">string</span>             <span class="comment"># Required</span></span><br><span class="line">  <span class="attr">clusterIP:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">sessionAffinity:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">string</span></span><br><span class="line">    <span class="attr">port:</span> <span class="string">int</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="string">int</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="string">int</span></span><br><span class="line">  <span class="attr">status:</span></span><br><span class="line">    <span class="attr">loadBalancer:</span></span><br><span class="line">      <span class="attr">ingress:</span></span><br><span class="line">      <span class="attr">ip:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">hostname:</span> <span class="string">string</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Service的基本使用"><a href="#Service的基本使用" class="headerlink" title="Service的基本使用"></a>Service的基本使用</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">webapp</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">8081</span></span><br></pre></td></tr></table></figure>
+
+<p>kind 指定 <code>Service</code> ， selector 选择指定的 <code>label</code> ，会将 <code>label</code> 包含  <code>app:web</code> 的所有 <code>Pod</code> 都加到这个 <code>Service</code> 中来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./service_create.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="Service的访问"><a href="#Service的访问" class="headerlink" title="Service的访问"></a>Service的访问</h2><ul>
+<li>IP: <code>Service</code> 拥有自己的 IP 可以使用该 IP 进行访问，访问进来后会将请求负载到某一个 <code>Pod</code> 上。</li>
+<li>DNS: <code>Service</code> 也可以通过域名进行访问。DNS 需要部署 <code>core-dns</code> 或其他 DNS 组件，后面专门研究。</li>
+</ul>
+<h2 id="Service负载策略"><a href="#Service负载策略" class="headerlink" title="Service负载策略"></a>Service负载策略</h2><ul>
+<li>RoundRobin: 轮询模式，即每一次请求都按次序分发到每一个 <code>Pod</code> 上。</li>
+<li>SessionAffinity: 会话亲和模式，即基于客户端 IP 进行会话保持，第一次将请求分发到哪一个 <code>Pod</code> 之后的请求全都分发到该 <code>Pod</code> 上。</li>
+</ul>
+<h2 id="Service多端口"><a href="#Service多端口" class="headerlink" title="Service多端口"></a>Service多端口</h2><ul>
+<li><p>同协议：需要指定名称</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">webapp</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8081</span>  <span class="comment">#第一个端口</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">8081</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">web</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8002</span>  <span class="comment">#第二个端口</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">8002</span>  </span><br><span class="line">    <span class="attr">name:</span> <span class="string">manager</span></span><br></pre></td></tr></table></figure></li>
+<li><p>不同协议</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">webapp</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">dns</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">53</span></span><br><span class="line">    <span class="attr">portocol:</span> <span class="string">UDP</span> <span class="comment">#指定 UDP 协议</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">dns-tcp</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">53</span></span><br><span class="line">    <span class="attr">portocol:</span> <span class="string">TCP</span> <span class="comment">#指定 TCP 协议</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="外部服务Service"><a href="#外部服务Service" class="headerlink" title="外部服务Service"></a>外部服务Service</h2><p>场景：需要将数据库或其他 namespace 中的服务做为后端服务。可以创建一个没有 label selector 的 Service。然后再手动创建一个和 Service 同名的 <code>Endpoints</code> 。</p>
+<ul>
+<li><p>Service</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">8081</span></span><br></pre></td></tr></table></figure></li>
+<li><p>EndPoint</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">subsets:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">address:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">IP:</span> <span class="number">1.2</span><span class="number">.3</span><span class="number">.4</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8081</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Service%E6%8C%87%E5%90%91%E5%A4%96%E9%83%A8%E6%9C%8D%E5%8A%A1.jpg" alt="Service指向外部服务"></p>
+<h1 id="集群外访问Service"><a href="#集群外访问Service" class="headerlink" title="集群外访问Service"></a>集群外访问Service</h1><p><code>Pod</code> 和 <code>Service</code> 都是 k8s 中的概念，对于外部来说都是无法感知的。为了让宿主机能够访问这些服务，可以将<code>Pod</code> 或 <code>Service</code> 的端口号映射到宿主机，使客户端能够通过物理机访问容器内的应用。</p>
+<h2 id="将Pod的端口号映射到宿主机"><a href="#将Pod的端口号映射到宿主机" class="headerlink" title="将Pod的端口号映射到宿主机"></a>将Pod的端口号映射到宿主机</h2><h3 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h3><ul>
+<li>创建 nginx 的 Pod</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span> <span class="comment">#指定 Pod名称</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">hostPort:</span> <span class="number">81</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./pod_mapping.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看 Pod 状态</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod nginx</span><br><span class="line"></span><br><span class="line">NAME     READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES</span><br><span class="line">webapp   1/1     Running   0          61m   172.17.0.7   minikube   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果看 STATUS 状态不是 Running 的话，说明该 Pod 未启动成功</p>
+</blockquote>
+<ul>
+<li>登录 Node 访问该端口</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">minikube ssh</span><br><span class="line">curl 127.0.0.1:81 #前面指定了映射端口是 81</span><br><span class="line">curl 192.168.49.2:81 # Node 的 IP 地址是 192.168.49.2，使用这个 IP 地址与上面效果相同</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用 kubectl get node -o wide 可以查看 Node 的 IP 地址</p>
+</blockquote>
+<ul>
+<li>在查看 <code>Pod</code> 的日志</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">kubectl logs -f nginx</span><br><span class="line"></span><br><span class="line">/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration</span><br><span class="line">/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/</span><br><span class="line">/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh</span><br><span class="line">10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf</span><br><span class="line">10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf</span><br><span class="line">/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh</span><br><span class="line">/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh</span><br><span class="line">/docker-entrypoint.sh: Configuration complete; ready for start up</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: using the &quot;epoll&quot; event method</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: nginx/1.21.1</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: built by gcc 8.3.0 (Debian 8.3.0-6)</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: OS: Linux 5.10.47-linuxkit</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker processes</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 32</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 33</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 34</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 35</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 36</span><br><span class="line">2021/09/05 13:40:57 [notice] 1#1: start worker process 37</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">172.17.0.1 - - [05/Sep/2021:13:41:36 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.68.0&quot; &quot;-&quot;</span><br><span class="line">192.168.49.2 - - [05/Sep/2021:13:46:06 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.68.0&quot; &quot;-&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="设置hostNetwork"><a href="#设置hostNetwork" class="headerlink" title="设置hostNetwork"></a>设置hostNetwork</h3><p>通过设置 hostNetwork=true 将 <code>Pod</code> 中的端口暴露出来，本质上也是暴露端口，只是 hostNetwork 是将所有端口都暴露。</p>
+<ul>
+<li>创建 <code>Pod</code> </li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">hostNetwork:</span> <span class="literal">true</span> <span class="comment">#设置为 true</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./pod_mapping.yaml</span><br></pre></td></tr></table></figure>
+
+<p>后面操作与上面一致，登录 node 访问nginx，通过查看日志判断是否有请求到。</p>
+<h2 id="将Service的端口号映射到宿主机"><a href="#将Service的端口号映射到宿主机" class="headerlink" title="将Service的端口号映射到宿主机"></a>将Service的端口号映射到宿主机</h2><h3 id="映射Service端口"><a href="#映射Service端口" class="headerlink" title="映射Service端口"></a>映射Service端口</h3><ul>
+<li>创建 <code>Service</code> </li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">webapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">webapp</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30000</span>  <span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ./service_mapping.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>访问 nginx</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl 127.0.0.1:30000</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过查看 nginx <code>Pod</code> 的日志判断是否请求进来</li>
+</ul>
+<h3 id="设置-LoadBalancer"><a href="#设置-LoadBalancer" class="headerlink" title="设置 LoadBalancer"></a>设置 LoadBalancer</h3><p>例如: 阿里云 SLB</p>
+<h1 id="DNS服务"><a href="#DNS服务" class="headerlink" title="DNS服务"></a>DNS服务</h1><p>Kubernetes 1.11 版本开始， DNS 服务由 CoreDNS 提供。</p>
+<h1 id="Ingress-HTTP-7层路由"><a href="#Ingress-HTTP-7层路由" class="headerlink" title="Ingress: HTTP 7层路由"></a>Ingress: HTTP 7层路由</h1><p>在我们部署应用时，我们很多时候的需求是这样的：</p>
+<p><a target="_blank" rel="noopener" href="https://xxx.xx/api">https://xxx.xx/api</a> 希望将请求打到 api 的 <code>Service</code> 上;</p>
+<p><a target="_blank" rel="noopener" href="https://xxx.xx/web">https://xxx.xx/web</a> 希望将请求打到 web 的 <code>Service</code> 上；</p>
+<p>同时，我们的端口是同一个端口。即是通过 <code>uri</code> 来区分不同的服务。这个功能就需要使用到 <code>Ingress</code> 来进行 HTTP 层的路由转发。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/" rel="prev" title="自学k8s系列~04之Pod">
+                  <i class="fa fa-chevron-left"></i> 自学k8s系列~04之Pod
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/04/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-06%E4%B9%8B%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/" rel="next" title="自学k8s系列~06之滚动更新">
+                  自学k8s系列~06之滚动更新 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

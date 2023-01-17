@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="axios简介axios 是一个 JavaSctipt 的 http 客户端请求工具，同时也支持 Node.js 。axios 有以下特性：  向浏览器发送异步请求(ajax请求)。 支持 Promise API。 可以对请求(request) 和 响应(response)进行拦截。 可以将请求数据(request data) 和响应数据(response data)进行转换。 支持取消请求。 自">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自学React系列~05之axios">
+<meta property="og:url" content="https://withoutcause.github.io/2021/09/16/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-05%E4%B9%8Baxios/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="axios简介axios 是一个 JavaSctipt 的 http 客户端请求工具，同时也支持 Node.js 。axios 有以下特性：  向浏览器发送异步请求(ajax请求)。 支持 Promise API。 可以对请求(request) 和 响应(response)进行拦截。 可以将请求数据(request data) 和响应数据(response data)进行转换。 支持取消请求。 自">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-16T14:39:09.000Z">
+<meta property="article:modified_time" content="2021-09-16T14:39:09.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="Ajax">
+<meta property="article:tag" content="axios">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/09/16/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-05%E4%B9%8Baxios/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/09/16/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-05%E4%B9%8Baxios/","path":"2021/09/16/自学React系列-05之axios/","title":"自学React系列~05之axios"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自学React系列~05之axios | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#axios%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">axios简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%91%E9%80%81GET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">发送GET请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%91%E9%80%81POST%E8%AF%B7%E6%B1%82"><span class="nav-number">3.</span> <span class="nav-text">发送POST请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#axios%E6%94%AF%E6%8C%81%E7%9A%84%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">axios支持的请求方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAaxios%E5%AE%9E%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">创建axios实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E7%9A%84%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">支持的配置参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E5%86%85%E5%AE%B9"><span class="nav-number">7.</span> <span class="nav-text">响应内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%85%A8%E5%B1%80%E5%8F%82%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">设置全局参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">9.</span> <span class="nav-text">拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">9.1.</span> <span class="nav-text">请求拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">9.2.</span> <span class="nav-text">响应拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">9.3.</span> <span class="nav-text">移除拦截器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E8%AF%B7%E6%B1%82"><span class="nav-number">10.</span> <span class="nav-text">取消请求</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/09/16/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-05%E4%B9%8Baxios/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自学React系列~05之axios | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自学React系列~05之axios
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-16 22:39:09" itemprop="dateCreated datePublished" datetime="2021-09-16T22:39:09+08:00">2021-09-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="axios简介"><a href="#axios简介" class="headerlink" title="axios简介"></a>axios简介</h1><p>axios 是一个 <code>JavaSctipt</code> 的 http 客户端请求工具，同时也支持 <code>Node.js</code> 。<code>axios</code> 有以下特性：</p>
+<ul>
+<li>向浏览器发送异步请求(ajax请求)。</li>
+<li>支持 <code>Promise</code> API。</li>
+<li>可以对请求(request) 和 响应(response)进行拦截。</li>
+<li>可以将请求数据(request data) 和响应数据(response data)进行转换。</li>
+<li>支持取消请求。</li>
+<li>自动转换为 <code>JSON</code> 数据。</li>
+<li>支持多种浏览器：Chrome、FireFox、Safari、MicroSoft Edge、<del>IE11(基本没人使用)</del></li>
+</ul>
+<h1 id="发送GET请求"><a href="#发送GET请求" class="headerlink" title="发送GET请求"></a>发送GET请求</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> url = <span class="string">&#x27;http://localhost:8080/test/test&#x27;</span>;</span><br><span class="line">axios.get(url)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理成功情况</span></span><br><span class="line">  <span class="built_in">console</span>.log(response);</span><br><span class="line">&#125;)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理错误情况</span></span><br><span class="line">  <span class="built_in">console</span>.log(error);</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 总是会执行</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="发送POST请求"><a href="#发送POST请求" class="headerlink" title="发送POST请求"></a>发送POST请求</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> url = <span class="string">&#x27;http://localhost:8080/test/test&#x27;</span>;</span><br><span class="line">axios.post(url, &#123;</span><br><span class="line">  <span class="comment">// 这里是参数</span></span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理成功情况</span></span><br><span class="line">  <span class="built_in">console</span>.log(response);</span><br><span class="line">&#125;)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理错误情况</span></span><br><span class="line">  <span class="built_in">console</span>.log(error);</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 总是会执行</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>看起来只是简单的将 <code>get</code> 替换成 <code>post</code> 即可。</p>
+<h1 id="axios支持的请求方式"><a href="#axios支持的请求方式" class="headerlink" title="axios支持的请求方式"></a>axios支持的请求方式</h1><ul>
+<li><p>axios.request(config)</p>
+</li>
+<li><p>axios.get(url[, config])</p>
+</li>
+<li><p>axios.post(url[, data[, config]])</p>
+</li>
+<li><p>axios.delete(url[, config])</p>
+</li>
+<li><p>axios.head(url[, config])</p>
+</li>
+<li><p>axios.options(url[, config])</p>
+</li>
+<li><p>axios.put(url[, data[, config]])</p>
+</li>
+<li><p>axios.patch(url[, data[, config]])</p>
+</li>
+</ul>
+<h1 id="创建axios实例"><a href="#创建axios实例" class="headerlink" title="创建axios实例"></a>创建axios实例</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&#x27;https://some-domain.com/api/&#x27;</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">1000</span>,</span><br><span class="line">  <span class="attr">headers</span>: &#123;<span class="string">&#x27;X-Custom-Header&#x27;</span>: <span class="string">&#x27;foobar&#x27;</span>&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="支持的配置参数"><a href="#支持的配置参数" class="headerlink" title="支持的配置参数"></a>支持的配置参数</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `url` 是用于请求的服务器 URL</span></span><br><span class="line">  <span class="attr">url</span>: <span class="string">&#x27;/user&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `method` 是创建请求时使用的方法</span></span><br><span class="line">  <span class="attr">method</span>: <span class="string">&#x27;get&#x27;</span>, <span class="comment">// 默认值，还可以写 psot，put，delete 等</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。</span></span><br><span class="line">  <span class="comment">// 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL</span></span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&#x27;https://some-domain.com/api/&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformRequest` 允许在向服务器发送前，修改请求数据</span></span><br><span class="line">  <span class="comment">// 它只能用与 &#x27;PUT&#x27;, &#x27;POST&#x27; 和 &#x27;PATCH&#x27; 这几个请求方法</span></span><br><span class="line">  <span class="comment">// 数组中最后一个函数必须返回一个字符串， 一个Buffer实例，ArrayBuffer，FormData，或 Stream</span></span><br><span class="line">  <span class="comment">// 你可以修改请求头。</span></span><br><span class="line">  <span class="attr">transformRequest</span>: [<span class="function"><span class="keyword">function</span> (<span class="params">data, headers</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对发送的 data 进行任意转换处理</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformResponse` 在传递给 then/catch 前，允许修改响应数据</span></span><br><span class="line">  <span class="attr">transformResponse</span>: [<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对接收的 data 进行任意转换处理</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 自定义请求头</span></span><br><span class="line">  <span class="attr">headers</span>: &#123;<span class="string">&#x27;X-Requested-With&#x27;</span>: <span class="string">&#x27;XMLHttpRequest&#x27;</span>&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `params` 是与请求一起发送的 URL 参数</span></span><br><span class="line">  <span class="comment">// 必须是一个简单对象或 URLSearchParams 对象</span></span><br><span class="line">  <span class="attr">params</span>: &#123;</span><br><span class="line">    <span class="attr">ID</span>: <span class="number">12345</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `paramsSerializer`是可选方法，主要用于序列化`params`</span></span><br><span class="line">  <span class="comment">// (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)</span></span><br><span class="line">  <span class="attr">paramsSerializer</span>: <span class="function"><span class="keyword">function</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Qs.stringify(params, &#123;<span class="attr">arrayFormat</span>: <span class="string">&#x27;brackets&#x27;</span>&#125;)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `data` 是作为请求体被发送的数据</span></span><br><span class="line">  <span class="comment">// 仅适用 &#x27;PUT&#x27;, &#x27;POST&#x27;, &#x27;DELETE 和 &#x27;PATCH&#x27; 请求方法</span></span><br><span class="line">  <span class="comment">// 在没有设置 `transformRequest` 时，则必须是以下类型之一:</span></span><br><span class="line">  <span class="comment">// - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams</span></span><br><span class="line">  <span class="comment">// - 浏览器专属: FormData, File, Blob</span></span><br><span class="line">  <span class="comment">// - Node 专属: Stream, Buffer</span></span><br><span class="line">  <span class="attr">data</span>: &#123;</span><br><span class="line">    <span class="attr">firstName</span>: <span class="string">&#x27;Fred&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 发送请求体数据的可选语法</span></span><br><span class="line">  <span class="comment">// 请求方式 post</span></span><br><span class="line">  <span class="comment">// 只有 value 会被发送，key 则不会</span></span><br><span class="line">  <span class="attr">data</span>: <span class="string">&#x27;Country=Brasil&amp;City=Belo Horizonte&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `timeout` 指定请求超时的毫秒数。</span></span><br><span class="line">  <span class="comment">// 如果请求时间超过 `timeout` 的值，则请求会被中断</span></span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">1000</span>, <span class="comment">// 默认值是 `0` (永不超时)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `withCredentials` 表示跨域请求时是否需要使用凭证</span></span><br><span class="line">  <span class="attr">withCredentials</span>: <span class="literal">false</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `adapter` 允许自定义处理请求，这使测试更加容易。</span></span><br><span class="line">  <span class="comment">// 返回一个 promise 并提供一个有效的响应 （参见 lib/adapters/README.md）。</span></span><br><span class="line">  <span class="attr">adapter</span>: <span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `auth` HTTP Basic Auth</span></span><br><span class="line">  <span class="attr">auth</span>: &#123;</span><br><span class="line">    <span class="attr">username</span>: <span class="string">&#x27;janedoe&#x27;</span>,</span><br><span class="line">    <span class="attr">password</span>: <span class="string">&#x27;s00pers3cret&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `responseType` 表示浏览器将要响应的数据类型</span></span><br><span class="line">  <span class="comment">// 选项包括: &#x27;arraybuffer&#x27;, &#x27;document&#x27;, &#x27;json&#x27;, &#x27;text&#x27;, &#x27;stream&#x27;</span></span><br><span class="line">  <span class="comment">// 浏览器专属：&#x27;blob&#x27;</span></span><br><span class="line">  <span class="attr">responseType</span>: <span class="string">&#x27;json&#x27;</span>, <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `responseEncoding` 表示用于解码响应的编码 (Node.js 专属)</span></span><br><span class="line">  <span class="comment">// 注意：忽略 `responseType` 的值为 &#x27;stream&#x27;，或者是客户端请求</span></span><br><span class="line">  <span class="comment">// Note: Ignored for `responseType` of &#x27;stream&#x27; or client-side requests</span></span><br><span class="line">  <span class="attr">responseEncoding</span>: <span class="string">&#x27;utf8&#x27;</span>, <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `xsrfCookieName` 是 xsrf token 的值，被用作 cookie 的名称</span></span><br><span class="line">  <span class="attr">xsrfCookieName</span>: <span class="string">&#x27;XSRF-TOKEN&#x27;</span>, <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `xsrfHeaderName` 是带有 xsrf token 值的http 请求头名称</span></span><br><span class="line">  <span class="attr">xsrfHeaderName</span>: <span class="string">&#x27;X-XSRF-TOKEN&#x27;</span>, <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `onUploadProgress` 允许为上传处理进度事件</span></span><br><span class="line">  <span class="comment">// 浏览器专属</span></span><br><span class="line">  <span class="attr">onUploadProgress</span>: <span class="function"><span class="keyword">function</span> (<span class="params">progressEvent</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 处理原生进度事件</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `onDownloadProgress` 允许为下载处理进度事件</span></span><br><span class="line">  <span class="comment">// 浏览器专属</span></span><br><span class="line">  <span class="attr">onDownloadProgress</span>: <span class="function"><span class="keyword">function</span> (<span class="params">progressEvent</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 处理原生进度事件</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxContentLength` 定义了node.js中允许的HTTP响应内容的最大字节数</span></span><br><span class="line">  <span class="attr">maxContentLength</span>: <span class="number">2000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxBodyLength`（仅Node）定义允许的http请求内容的最大字节数</span></span><br><span class="line">  <span class="attr">maxBodyLength</span>: <span class="number">2000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `validateStatus` 定义了对于给定的 HTTP状态码是 resolve 还是 reject promise。</span></span><br><span class="line">  <span class="comment">// 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，</span></span><br><span class="line">  <span class="comment">// 则promise 将会 resolved，否则是 rejected。</span></span><br><span class="line">  <span class="attr">validateStatus</span>: <span class="function"><span class="keyword">function</span> (<span class="params">status</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> status &gt;= <span class="number">200</span> &amp;&amp; status &lt; <span class="number">300</span>; <span class="comment">// 默认值</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxRedirects` 定义了在node.js中要遵循的最大重定向数。</span></span><br><span class="line">  <span class="comment">// 如果设置为0，则不会进行重定向</span></span><br><span class="line">  <span class="attr">maxRedirects</span>: <span class="number">5</span>, <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `socketPath` 定义了在node.js中使用的UNIX套接字。</span></span><br><span class="line">  <span class="comment">// e.g. &#x27;/var/run/docker.sock&#x27; 发送请求到 docker 守护进程。</span></span><br><span class="line">  <span class="comment">// 只能指定 `socketPath` 或 `proxy` 。</span></span><br><span class="line">  <span class="comment">// 若都指定，这使用 `socketPath` 。</span></span><br><span class="line">  <span class="attr">socketPath</span>: <span class="literal">null</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `httpAgent` and `httpsAgent` define a custom agent to be used when performing http</span></span><br><span class="line">  <span class="comment">// and https requests, respectively, in node.js. This allows options to be added like</span></span><br><span class="line">  <span class="comment">// `keepAlive` that are not enabled by default.</span></span><br><span class="line">  <span class="attr">httpAgent</span>: <span class="keyword">new</span> http.Agent(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line">  <span class="attr">httpsAgent</span>: <span class="keyword">new</span> https.Agent(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `proxy` 定义了代理服务器的主机名，端口和协议。</span></span><br><span class="line">  <span class="comment">// 您可以使用常规的`http_proxy` 和 `https_proxy` 环境变量。</span></span><br><span class="line">  <span class="comment">// 使用 `false` 可以禁用代理功能，同时环境变量也会被忽略。</span></span><br><span class="line">  <span class="comment">// `auth`表示应使用HTTP Basic auth连接到代理，并且提供凭据。</span></span><br><span class="line">  <span class="comment">// 这将设置一个 `Proxy-Authorization` 请求头，它会覆盖 `headers` 中已存在的自定义 `Proxy-Authorization` 请求头。</span></span><br><span class="line">  <span class="comment">// 如果代理服务器使用 HTTPS，则必须设置 protocol 为`https`</span></span><br><span class="line">  <span class="attr">proxy</span>: &#123;</span><br><span class="line">    <span class="attr">protocol</span>: <span class="string">&#x27;https&#x27;</span>,</span><br><span class="line">    <span class="attr">host</span>: <span class="string">&#x27;127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="attr">port</span>: <span class="number">9000</span>,</span><br><span class="line">    <span class="attr">auth</span>: &#123;</span><br><span class="line">      <span class="attr">username</span>: <span class="string">&#x27;mikeymike&#x27;</span>,</span><br><span class="line">      <span class="attr">password</span>: <span class="string">&#x27;rapunz3l&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// see https://axios-http.com/zh/docs/cancellation</span></span><br><span class="line">  <span class="attr">cancelToken</span>: <span class="keyword">new</span> CancelToken(<span class="function"><span class="keyword">function</span> (<span class="params">cancel</span>) </span>&#123;</span><br><span class="line">  &#125;),</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `decompress` indicates whether or not the response body should be decompressed </span></span><br><span class="line">  <span class="comment">// automatically. If set to `true` will also remove the &#x27;content-encoding&#x27; header </span></span><br><span class="line">  <span class="comment">// from the responses objects of all decompressed responses</span></span><br><span class="line">  <span class="comment">// - Node only (XHR cannot turn off decompression)</span></span><br><span class="line">  <span class="attr">decompress</span>: <span class="literal">true</span> <span class="comment">// 默认值</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="响应内容"><a href="#响应内容" class="headerlink" title="响应内容"></a>响应内容</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `data` 由服务器提供的响应</span></span><br><span class="line">  <span class="attr">data</span>: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `status` 来自服务器响应的 HTTP 状态码</span></span><br><span class="line">  <span class="attr">status</span>: <span class="number">200</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `statusText` 来自服务器响应的 HTTP 状态信息</span></span><br><span class="line">  <span class="attr">statusText</span>: <span class="string">&#x27;OK&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `headers` 是服务器响应头</span></span><br><span class="line">  <span class="comment">// 所有的 header 名称都是小写，而且可以使用方括号语法访问</span></span><br><span class="line">  <span class="comment">// 例如: `response.headers[&#x27;content-type&#x27;]`</span></span><br><span class="line">  <span class="attr">headers</span>: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `config` 是 `axios` 请求的配置信息</span></span><br><span class="line">  <span class="attr">config</span>: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `request` 是生成此响应的请求</span></span><br><span class="line">  <span class="comment">// 在node.js中它是最后一个ClientRequest实例 (in redirects)，</span></span><br><span class="line">  <span class="comment">// 在浏览器中则是 XMLHttpRequest 实例</span></span><br><span class="line">  <span class="attr">request</span>: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是从后端取响应数据应该是 <code>response.data</code> 里面的内容。</p>
+<h1 id="设置全局参数"><a href="#设置全局参数" class="headerlink" title="设置全局参数"></a>设置全局参数</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">axios.defaults.baseURL = <span class="string">&#x27;https://api.example.com&#x27;</span>;</span><br><span class="line">axios.defaults.headers.common[<span class="string">&#x27;Authorization&#x27;</span>] = AUTH_TOKEN;</span><br><span class="line">axios.defaults.headers.post[<span class="string">&#x27;Content-Type&#x27;</span>] = <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>;</span><br><span class="line"><span class="comment">// xxx</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 axios.defaults.xxx 进行设置即可。</p>
+<p>配置将会按优先级进行合并。它的顺序是：在 <a target="_blank" rel="noopener" href="https://github.com/axios/axios/blob/master/lib/defaults.js#L28">lib/defaults.js</a> 中找到的库默认值，然后是实例的 <code>defaults</code> 属性，最后是请求的 <code>config</code> 参数。后面的优先级要高于前面的。</p>
+<h1 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h1><p>拦截器分为 <code>请求拦截器</code> 和 <code>响应拦截器</code> 两类，分别对请求和响应进行拦截。</p>
+<h2 id="请求拦截器"><a href="#请求拦截器" class="headerlink" title="请求拦截器"></a>请求拦截器</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在发送请求之前做些什么</span></span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line">  &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对请求错误做些什么</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="响应拦截器"><a href="#响应拦截器" class="headerlink" title="响应拦截器"></a>响应拦截器</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">axios.interceptors.response.use(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 2xx 范围内的状态码都会触发该函数。</span></span><br><span class="line">    <span class="comment">// 对响应数据做点什么</span></span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">  &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 超出 2xx 范围的状态码都会触发该函数。</span></span><br><span class="line">    <span class="comment">// 对响应错误做点什么</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="移除拦截器"><a href="#移除拦截器" class="headerlink" title="移除拦截器"></a>移除拦截器</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里定义拦截器</span></span><br><span class="line"><span class="keyword">const</span> myInterceptor = axios.interceptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">/*...*/</span>&#125;);</span><br><span class="line"><span class="comment">// 这里将上面的拦截器移除</span></span><br><span class="line">axios.interceptors.request.eject(myInterceptor);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="取消请求"><a href="#取消请求" class="headerlink" title="取消请求"></a>取消请求</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> CancelToken = axios.CancelToken;</span><br><span class="line"><span class="keyword">let</span> cancel;</span><br><span class="line"></span><br><span class="line">axios.get(<span class="string">&#x27;/user/12345&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">cancelToken</span>: <span class="keyword">new</span> CancelToken(<span class="function"><span class="keyword">function</span> <span class="title">executor</span>(<span class="params">c</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// executor 函数接收一个 cancel 函数作为参数</span></span><br><span class="line">    cancel = c;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求</span></span><br><span class="line">cancel();</span><br></pre></td></tr></table></figure>
+
+<p>以上是 <code>axios</code> 的一些基本使用。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/Ajax/" rel="tag"># Ajax</a>
+              <a href="/tags/axios/" rel="tag"># axios</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/13/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-04%E4%B9%8BReact%E8%84%9A%E6%89%8B%E6%9E%B6/" rel="prev" title="自学React系列~04之React脚手架">
+                  <i class="fa fa-chevron-left"></i> 自学React系列~04之React脚手架
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/19/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-06%E4%B9%8B%E8%B7%AF%E7%94%B1/" rel="next" title="自学React系列~06之路由">
+                  自学React系列~06之路由 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

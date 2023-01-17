@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于 6.14 日晚上上线客户价值的总结上线内容 客户价值定时任务 hotel-manger (门店后台)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="警钟长鸣~01之19年一次记录">
+<meta property="og:url" content="https://withoutcause.github.io/2021/10/11/%E8%AD%A6%E9%92%9F%E9%95%BF%E9%B8%A3-01%E4%B9%8B19%E5%B9%B4%E4%B8%80%E6%AC%A1%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="关于 6.14 日晚上上线客户价值的总结上线内容 客户价值定时任务 hotel-manger (门店后台)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-11T14:35:18.000Z">
+<meta property="article:modified_time" content="2021-10-11T14:35:18.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="经验">
+<meta property="article:tag" content="心得">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/10/11/%E8%AD%A6%E9%92%9F%E9%95%BF%E9%B8%A3-01%E4%B9%8B19%E5%B9%B4%E4%B8%80%E6%AC%A1%E8%AE%B0%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/10/11/%E8%AD%A6%E9%92%9F%E9%95%BF%E9%B8%A3-01%E4%B9%8B19%E5%B9%B4%E4%B8%80%E6%AC%A1%E8%AE%B0%E5%BD%95/","path":"2021/10/11/警钟长鸣-01之19年一次记录/","title":"警钟长鸣~01之19年一次记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>警钟长鸣~01之19年一次记录 | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E-6-14-%E6%97%A5%E6%99%9A%E4%B8%8A%E4%B8%8A%E7%BA%BF%E5%AE%A2%E6%88%B7%E4%BB%B7%E5%80%BC%E7%9A%84%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">关于 6.14 日晚上上线客户价值的总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E5%86%85%E5%AE%B9"><span class="nav-number">1.1.</span> <span class="nav-text">上线内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%89%E5%8F%8A%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.</span> <span class="nav-text">涉及模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%BC%80%E5%8F%91"><span class="nav-number">1.2.3.</span> <span class="nav-text">其他开发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87"><span class="nav-number">1.3.</span> <span class="nav-text">上线前的准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">上线过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85"><span class="nav-number">1.5.</span> <span class="nav-text">打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E6%95%85%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.6.</span> <span class="nav-text">事故原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E5%88%86%E6%9E%90"><span class="nav-number">1.7.</span> <span class="nav-text">总结分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E9%98%B6%E6%AE%B5"><span class="nav-number">1.7.1.</span> <span class="nav-text">开发阶段</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/10/11/%E8%AD%A6%E9%92%9F%E9%95%BF%E9%B8%A3-01%E4%B9%8B19%E5%B9%B4%E4%B8%80%E6%AC%A1%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="警钟长鸣~01之19年一次记录 | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          警钟长鸣~01之19年一次记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-11 22:35:18" itemprop="dateCreated datePublished" datetime="2021-10-11T22:35:18+08:00">2021-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BF%83%E5%BE%97/" itemprop="url" rel="index"><span itemprop="name">心得</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="关于-6-14-日晚上上线客户价值的总结"><a href="#关于-6-14-日晚上上线客户价值的总结" class="headerlink" title="关于 6.14 日晚上上线客户价值的总结"></a>关于 6.14 日晚上上线客户价值的总结</h1><h2 id="上线内容"><a href="#上线内容" class="headerlink" title="上线内容"></a>上线内容</h2><ul>
+<li>客户价值定时任务</li>
+<li>hotel-manger (门店后台)</li>
+</ul>
+<h2 id="涉及模块"><a href="#涉及模块" class="headerlink" title="涉及模块"></a>涉及模块</h2><h3 id="工程"><a href="#工程" class="headerlink" title="工程"></a>工程</h3><ul>
+<li>pig-yd-service</li>
+</ul>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>添加字段，后面字段没有被使用，已废弃该字段，但是没有及时从数据库中删除</p>
+<h3 id="其他开发"><a href="#其他开发" class="headerlink" title="其他开发"></a>其他开发</h3><ul>
+<li>hotel-manager (门店后台)</li>
+</ul>
+<h2 id="上线前的准备"><a href="#上线前的准备" class="headerlink" title="上线前的准备"></a>上线前的准备</h2><ul>
+<li><p>数据库脚本</p>
+</li>
+<li><p>合并代码(未及时合并到 master)</p>
+<blockquote>
+<p>当时没有使用 git-flow 这种工作流的试试，将 master 分支合并到开发分支，然后用开发分支打包上线。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="上线过程"><a href="#上线过程" class="headerlink" title="上线过程"></a>上线过程</h2><h2 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h2><ul>
+<li>git 合并</li>
+</ul>
+<p>非常不顺利</p>
+<h2 id="事故原因"><a href="#事故原因" class="headerlink" title="事故原因"></a>事故原因</h2><ul>
+<li><p>执行初始化方法第一次 404 。原因是没有将代码合并到 master 分支，重新合并分支并上线。</p>
+</li>
+<li><p>执行初始化接口第二次失败，原因是有一条异常数据。</p>
+</li>
+<li><p>docker 上没有日志，没有将日志打印到控制台上</p>
+</li>
+<li><p>执行任务中途报错，有两个字段在测试环境中添加的后来废弃不使用了，生产环境数据库中没有这两个字段， SQL 执行报错。修改代码，从 Mybatis 配置文件和 Entity 对象中删除这两个字段的映射</p>
+</li>
+<li><p>执行任务中途报错，数据库中有 <code>meal_type_name</code> 数据异常，值为<code>午餐</code>但是后面有很多空格，整个字段长度超过新建表中定义的长度。</p>
+<blockquote>
+<p>在代码中取该字段值的地方加上 trim() 方法</p>
+</blockquote>
+</li>
+<li><p>打开门店后台页面，有一个接口报错，原因是有两个字段在测试环境下添加废弃后未删除，被映射进了 Mybatis 的 xml 和 Entity 对象中，查询时报 <code>Unknown cloumn &#39;MAN_VIP_ID&#39; xxx</code></p>
+</li>
+<li><p>定时调度的任务不执行，原因是代码中的逻辑错误，导致 <code>if </code> 永远都为 <code>false</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LocalTime startTime1 = LocalTime.of(<span class="number">23</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">LocalTime startTime2 = LocalTime.of(<span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">LocalTime nowTime = LocalTime.now();</span><br><span class="line"><span class="keyword">if</span> (nowTime.isAfter(startTime1) &amp;&amp; nowTime.isBefore(startTime2)) &#123;</span><br><span class="line">  xxxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="总结分析"><a href="#总结分析" class="headerlink" title="总结分析"></a>总结分析</h2><h3 id="开发阶段"><a href="#开发阶段" class="headerlink" title="开发阶段"></a>开发阶段</h3><ul>
+<li>开发阶段需求不够明确，基本都是似是而非。重述时，不能完成的讲出来每个字段的取值逻辑，只是能够听懂。<ul>
+<li>规避，开会说明需求后，还要自己再仔细过一遍，对于每个计算字段是如何由来的，必须做到自己能够讲清楚，对于涉及到的表，必须要知道。</li>
+</ul>
+</li>
+<li>开发前，对异常状态考虑不够周全，写出的代码健壮性不够。<ul>
+<li>对所有数据都要认为不可靠，包含输入的和数据库中查到的，必须进行一次校验</li>
+<li>考虑到如果系统发生故障，再重新恢复后的情况</li>
+<li>如果是定时任务，任务本身要可控，可停，可启</li>
+<li>要做幂等，如果是定时任务，同一个任务，多次执行结果应该是一样</li>
+<li>代码执行过程要有日志，可以看到执行的痕迹，并且执行出错后可恢复</li>
+<li>代码执行的最大时间要可控，不能出现超长执行，定时任务，一家酒店的数据执行时间长达 30 分钟是不正确的。</li>
+<li>数据库查询，要考虑到上游的数据会持续增长，单次的查询量要固定或者控制在一个阈值之内，量大的时候多次去查询</li>
+<li>插入数据，数据库数据可观察，避免出现大事务提交的情况</li>
+<li>尽可能使用多线程处理，以提高性能</li>
+</ul>
+</li>
+<li>业务理解<ul>
+<li>充分理解需求，能够说清楚需求中每项数据的来源和流向，同时也能向别人讲述清楚，反复同产品确认</li>
+<li>清楚受众，功能提供给谁，在什么场景下使用</li>
+<li>对其他模块/系统是否存在影响<ul>
+<li>现有表结构有无修改字段名称、类型、长度等</li>
+<li>现有表是否有删除/添加字段</li>
+<li>如果是新建表，表中数据是否要与其他现有表数据同步变动</li>
+<li>数据库中数据的来源是否有多处，其他模块/系统需要增加插入到新库的代码</li>
+<li>新建表中数据增加，是否需要往其他表中插入数据</li>
+</ul>
+</li>
+<li>保持质疑，如果觉得某个做法有不合理，及时提出</li>
+</ul>
+</li>
+<li>编码<ul>
+<li>使用合适的数据类型， Entity 中不使用基本类型</li>
+<li>对数据所有的来源都认为不可靠，需要做判断<ul>
+<li>代码要做健壮性判断，宁可多写 <code>if (xxx != null)</code> </li>
+<li>字符串考虑空格的问题，要去除前后空格</li>
+<li>判断的逻辑，测试时，要把 <code>true</code> 与 <code>false</code> 都覆盖到，不能只测单个可能</li>
+<li>边界值，在做除法操作时，除数不能为 0，乘法时也要考虑 * 0 的情况</li>
+<li>有浮点数(小数)时，要考虑到精度问题，以及取舍方式。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>在 2021-10-11 无意中再翻到的，发现之前记的一些东西现在做得也并不是那么好。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag"># 经验</a>
+              <a href="/tags/%E5%BF%83%E5%BE%97/" rel="tag"># 心得</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/30/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-07%E4%B9%8BRedux/" rel="prev" title="自学React系列~07之Redux">
+                  <i class="fa fa-chevron-left"></i> 自学React系列~07之Redux
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/10/12/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-08%E4%B9%8BTypeScript/" rel="next" title="自学React系列-08之TypeScript">
+                  自学React系列-08之TypeScript <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

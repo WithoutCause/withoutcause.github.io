@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="[toc]  注：下面的操作都是在 kibana 中进行的。  索引(index)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自学ES-02之索引CRUD">
+<meta property="og:url" content="https://withoutcause.github.io/2022/04/15/%E8%87%AA%E5%AD%A6ES-02%E4%B9%8B%E7%B4%A2%E5%BC%95CRUD/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="[toc]  注：下面的操作都是在 kibana 中进行的。  索引(index)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-14T16:23:31.000Z">
+<meta property="article:modified_time" content="2022-04-14T16:23:31.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="ES">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2022/04/15/%E8%87%AA%E5%AD%A6ES-02%E4%B9%8B%E7%B4%A2%E5%BC%95CRUD/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2022/04/15/%E8%87%AA%E5%AD%A6ES-02%E4%B9%8B%E7%B4%A2%E5%BC%95CRUD/","path":"2022/04/15/自学ES-02之索引CRUD/","title":"自学ES-02之索引CRUD"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自学ES-02之索引CRUD | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95-index"><span class="nav-number">1.</span> <span class="nav-text">索引(index)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">1.1.</span> <span class="nav-text">索引的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.2.</span> <span class="nav-text">索引查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.</span> <span class="nav-text">索引删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%89%93%E5%BC%80%E5%92%8C%E5%85%B3%E9%97%AD"><span class="nav-number">1.4.</span> <span class="nav-text">索引打开和关闭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%88%AB%E5%90%8D"><span class="nav-number">1.5.</span> <span class="nav-text">索引别名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%98%A0%E5%B0%84-mappings"><span class="nav-number">2.</span> <span class="nav-text">映射(mappings)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%98%A0%E5%B0%84"><span class="nav-number">2.1.</span> <span class="nav-text">创建映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%98%A0%E5%B0%84"><span class="nav-number">2.2.</span> <span class="nav-text">查看映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%98%A0%E5%B0%84"><span class="nav-number">2.3.</span> <span class="nav-text">修改映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keyword"><span class="nav-number">2.4.1.</span> <span class="nav-text">keyword</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#text"><span class="nav-number">2.4.2.</span> <span class="nav-text">text</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.3.</span> <span class="nav-text">数值类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B0%94-boolean"><span class="nav-number">2.4.4.</span> <span class="nav-text">布尔(boolean)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B-date"><span class="nav-number">2.4.5.</span> <span class="nav-text">日期类型(date)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">2.4.6.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.4.7.</span> <span class="nav-text">对象</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2022/04/15/%E8%87%AA%E5%AD%A6ES-02%E4%B9%8B%E7%B4%A2%E5%BC%95CRUD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自学ES-02之索引CRUD | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自学ES-02之索引CRUD
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-15 00:23:31" itemprop="dateCreated datePublished" datetime="2022-04-15T00:23:31+08:00">2022-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>[toc]</p>
+<blockquote>
+<p>注：下面的操作都是在 kibana 中进行的。</p>
+</blockquote>
+<h1 id="索引-index"><a href="#索引-index" class="headerlink" title="索引(index)"></a>索引(index)</h1><h2 id="索引的创建"><a href="#索引的创建" class="headerlink" title="索引的创建"></a>索引的创建</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PUT /&#123;index_name&#125;</span><br><span class="line">&#123;</span><br><span class="line">	settings: &#123;</span><br><span class="line">			...		</span><br><span class="line">	&#125;</span><br><span class="line">	mappings: &#123;</span><br><span class="line">		properties: &#123;</span><br><span class="line">			...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="索引查看"><a href="#索引查看" class="headerlink" title="索引查看"></a>索引查看</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /&#123;index_name&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="索引删除"><a href="#索引删除" class="headerlink" title="索引删除"></a>索引删除</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /&#123;index_name&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="索引打开和关闭"><a href="#索引打开和关闭" class="headerlink" title="索引打开和关闭"></a>索引打开和关闭</h2><p>ES 支持对索引进行关闭操作，关闭后也可以重新打开。索引一旦关闭：</p>
+<ul>
+<li>不能写入数据</li>
+<li>不能搜索数据</li>
+</ul>
+<p>kibana</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /&#123;index_name&#125;/_close</span><br></pre></td></tr></table></figure>
+
+<p>索引关闭后，再对索引进行数据写入或搜索，将返回如下报错信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;error&quot; : &#123;</span><br><span class="line">    &quot;root_cause&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;type&quot; : &quot;index_closed_exception&quot;,</span><br><span class="line">        &quot;reason&quot; : &quot;closed&quot;,</span><br><span class="line">        &quot;index_uuid&quot; : &quot;wnmGfLi-TPCanl-YuBNojg&quot;,</span><br><span class="line">        &quot;index&quot; : &quot;sjl&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;type&quot; : &quot;index_closed_exception&quot;,</span><br><span class="line">    &quot;reason&quot; : &quot;closed&quot;,</span><br><span class="line">    &quot;index_uuid&quot; : &quot;wnmGfLi-TPCanl-YuBNojg&quot;,</span><br><span class="line">    &quot;index&quot; : &quot;sjl&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;status&quot; : 400</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>打开索引</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /&#123;index_name&#125;/_open</span><br></pre></td></tr></table></figure>
+
+<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名"></a>索引别名</h2><p>可以对多个索引设置相同的别名，从而将这些索引通过别名进行聚合，然后再对设置别名的索引进行操作，就相当于是在同时操作这些别名匹配的索引。</p>
+<h1 id="映射-mappings"><a href="#映射-mappings" class="headerlink" title="映射(mappings)"></a>映射(mappings)</h1><h2 id="创建映射"><a href="#创建映射" class="headerlink" title="创建映射"></a>创建映射</h2><p>映射是在创建索引时一并指定。映射可以理解为关系型数据库中的表定义。一张表有哪些字段，每个字段什么类型。</p>
+<h2 id="查看映射"><a href="#查看映射" class="headerlink" title="查看映射"></a>查看映射</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET /&#123;index_name&#125;/_mapping</span><br><span class="line">#返回数据</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;sjl&quot;</span> : &#123;  #索引名称</span><br><span class="line">    <span class="attr">&quot;mappings&quot;</span> : &#123; #映射相关信息</span><br><span class="line">      <span class="attr">&quot;properties&quot;</span> : &#123;</span><br><span class="line">        <span class="attr">&quot;title&quot;</span> : &#123;</span><br><span class="line">          <span class="attr">&quot;type&quot;</span> : <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改映射"><a href="#修改映射" class="headerlink" title="修改映射"></a>修改映射</h2><p><strong>映射不能修改，只能扩展。</strong>，如果需要修改映射的字段类型的时候应该怎么办？</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 扩展映射 </span><br><span class="line">POST /sjl/_mapping</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;properties&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">      &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="keyword"><a href="#keyword" class="headerlink" title="keyword"></a>keyword</h3><p><code>keyword</code> 类型是不能再切分的字符串类型。在搜索的时候，不对 <code>keyword</code> 类型的字符串进行切分后的部分匹配。使用 <code>term</code> 查询数据。</p>
+<h3 id="text"><a href="#text" class="headerlink" title="text"></a>text</h3><p><code>text</code> 精英是可切分的字符串类型。在搜索的时候，会按照分词算法对 <code>text</code> 类型的字符串进行切分后匹配。使用 <code>match</code> 查询数据。</p>
+<h3 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h3><ul>
+<li><p>long(长整型):8字节，64位,  $-2^{63}$ —— $2^{63}$-1</p>
+</li>
+<li><p>integer(整型):4字节，32位，$-2^{31}$ —— $2^{31}$-1</p>
+</li>
+<li><p>short(短整型):2字节，16位，$-2^{15}$ —— $2^{15}$-1</p>
+</li>
+<li><p>byte(字节):1字符，8位，$-2^{7}$ —— $2^{7}$，即 -128——127</p>
+</li>
+<li><p>double(双精度):8字节，64位。</p>
+</li>
+<li><p>float(单精度)：4字节，32位</p>
+</li>
+<li><p>half_float(半精度)：2字符，16位。</p>
+</li>
+<li><p>scaled_float(缩放浮点型)</p>
+</li>
+<li><p>unsigned_long(无符号长整形)：6字节，64位。$2^{64}-1$</p>
+</li>
+</ul>
+<h3 id="布尔-boolean"><a href="#布尔-boolean" class="headerlink" title="布尔(boolean)"></a>布尔(boolean)</h3><ul>
+<li>true 或 “true”</li>
+<li>false 或 “false”</li>
+</ul>
+<h3 id="日期类型-date"><a href="#日期类型-date" class="headerlink" title="日期类型(date)"></a>日期类型(date)</h3><p>日期类型为两种：</p>
+<ul>
+<li>strict_date_optional_time：严格的日期类型，yyyy-MM-dd、yyyyMMdd、yyyyMMddHHmmss、yyyy-MM-ddTHH:mm:ss、yyyy-MM-ddTHH:mm:ss.SSS和yyyy-MM-ddTHH:mm:ss.SSSZ</li>
+<li>epoch_millis：时间戳类型</li>
+</ul>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>ES 定义的格式，自动支持数组。在定义时，使用数组的内容项的类型定义 mapping 即可。写入数据时，使用 <code>[]</code> 的形式。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST /&#123;index_name&#125;/<span class="number">001</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;tag&quot;</span>: [<span class="string">&quot;tag1&quot;</span>, <span class="string">&quot;tag2&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>tag 定义的是 <code>keyword</code> 的类型。</p>
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><p>与普通的对象操作一致。 </p>
+<p>示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES/" rel="tag"># ES</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/15/%E8%87%AA%E5%AD%A6ES-01%E4%B9%8B%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/" rel="prev" title="自学ES-01之环境安装">
+                  <i class="fa fa-chevron-left"></i> 自学ES-01之环境安装
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/15/%E8%87%AA%E5%AD%A6ES-03%E4%B9%8B%E6%96%87%E6%A1%A3/" rel="next" title="自学ES-03之文档">
+                  自学ES-03之文档 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

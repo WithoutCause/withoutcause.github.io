@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Pod 升级和回滚；Pod 的扩缩容;k8s自学系列完篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自学k8s系列~06之滚动更新">
+<meta property="og:url" content="https://withoutcause.github.io/2021/09/04/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-06%E4%B9%8B%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="Pod 升级和回滚；Pod 的扩缩容;k8s自学系列完篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0.jpg">
+<meta property="article:published_time" content="2021-09-04T14:46:37.000Z">
+<meta property="article:modified_time" content="2021-09-04T14:46:37.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0.jpg">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/09/04/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-06%E4%B9%8B%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/09/04/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-06%E4%B9%8B%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/","path":"2021/09/04/自学k8s系列-06之滚动更新/","title":"自学k8s系列~06之滚动更新"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自学k8s系列~06之滚动更新 | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%9F%A5"><span class="nav-number">1.</span> <span class="nav-text">Pod健康检查与服务可用性检查</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LivenessProbe"><span class="nav-number">1.1.</span> <span class="nav-text">LivenessProbe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReadinessProbe"><span class="nav-number">1.2.</span> <span class="nav-text">ReadinessProbe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">探针实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecAction"><span class="nav-number">1.3.1.</span> <span class="nav-text">ExecAction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCPSocketAction"><span class="nav-number">1.3.2.</span> <span class="nav-text">TCPSocketAction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPGetAction"><span class="nav-number">1.3.3.</span> <span class="nav-text">HTTPGetAction</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E7%9A%84%E5%8D%87%E7%BA%A7"><span class="nav-number">2.</span> <span class="nav-text">Pod的升级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E7%AD%96%E7%95%A5"><span class="nav-number">2.1.</span> <span class="nav-text">升级策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E7%9A%84%E5%9B%9E%E6%BB%9A"><span class="nav-number">3.</span> <span class="nav-text">Pod的回滚</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pod%E7%9A%84%E6%89%A9%E7%BC%A9%E5%AE%B9"><span class="nav-number">4.</span> <span class="nav-text">Pod的扩缩容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9"><span class="nav-number">4.1.</span> <span class="nav-text">手动扩缩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9"><span class="nav-number">4.2.</span> <span class="nav-text">自动扩缩容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">5.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/09/04/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-06%E4%B9%8B%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自学k8s系列~06之滚动更新 | 杰灵的博客">
+      <meta itemprop="description" content="Pod 升级和回滚；Pod 的扩缩容;k8s自学系列完篇">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自学k8s系列~06之滚动更新
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-04 22:46:37" itemprop="dateCreated datePublished" datetime="2021-09-04T22:46:37+08:00">2021-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">Pod 升级和回滚；Pod 的扩缩容;k8s自学系列完篇</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Pod健康检查与服务可用性检查"><a href="#Pod健康检查与服务可用性检查" class="headerlink" title="Pod健康检查与服务可用性检查"></a>Pod健康检查与服务可用性检查</h1><p>Kubenetes 对 Pod 的健康检查可用两类探针来进行检查: <strong>LivenessProbe</strong> 和 <strong>ReadinessProbe</strong> 。</p>
+<h2 id="LivenessProbe"><a href="#LivenessProbe" class="headerlink" title="LivenessProbe"></a>LivenessProbe</h2><p>判断容器是否存活，主要是对 Running 状态进行检测，如果检测到不健康，则将该容器杀掉然后根据容器的重启策略做相应的处理。如果容器没有指定 LivenessProbe 探针，则 kubelet 认为该容器永远是健康的。</p>
+<h2 id="ReadinessProbe"><a href="#ReadinessProbe" class="headerlink" title="ReadinessProbe"></a>ReadinessProbe</h2><p>ReadinessProbe 探针主要用于判断容器服务是否可用，即是否处于(Ready状态)。达到 Ready 状态的 Pod 才可以接收请求，如果容器不是 Ready 状态则自动将该容器从 Service 的 Endpoing 列表中隔离出去。当容器恢复到 Ready 状态时，再将容器加入到 Endping 列表中。这样就能保证容器如果没有处于 Ready 状态就不会有流量请求到该 Pod 上。</p>
+<h2 id="探针实现方式"><a href="#探针实现方式" class="headerlink" title="探针实现方式"></a>探针实现方式</h2><p><strong>LivenessProbe</strong> 和 <strong>ReadinessProbe</strong> 都可以配置以下三种实现方式和自定义扩展的方式。</p>
+<h3 id="ExecAction"><a href="#ExecAction" class="headerlink" title="ExecAction"></a>ExecAction</h3><p>在容器内部执行一个命令，如果该命令返回码为 0 ，则标志着该容器健康。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">liveness</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">liveness</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">liveness</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">args:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/bin/sh</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-c</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">echo</span> <span class="string">ok</span> <span class="string">&gt;</span> <span class="string">/tmp/headlth;</span> <span class="string">sleep</span> <span class="number">10</span><span class="string">;</span> <span class="string">rm</span> <span class="string">-rf</span> <span class="string">/tmp/health;</span> <span class="string">sleep</span> <span class="number">600</span></span><br><span class="line">    <span class="attr">livenessProbe:</span></span><br><span class="line">      <span class="attr">exec:</span></span><br><span class="line">        <span class="attr">command:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">cat</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/tmp/health</span></span><br><span class="line">      <span class="attr">initialDelaySeconds:</span> <span class="number">15</span></span><br><span class="line">      <span class="attr">timeoutSeconds:</span> <span class="number">1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>创建了一个文件位于 /tmp 目录下，10 秒后将期删除，然后探针去检测该文件。该 Pod 会被判断为不健康，执行多次重启。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod liveness</span><br><span class="line">NAME       READY   STATUS    RESTARTS   AGE</span><br><span class="line">liveness   1/1     Running   2          2m30s</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="TCPSocketAction"><a href="#TCPSocketAction" class="headerlink" title="TCPSocketAction"></a>TCPSocketAction</h3><p>通过容器的 IP 地址和端口号执行 TCP 检查，如果能够建立 TCP 链接，则表明容器健康。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">goproxy</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">goproxy</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">goproxy</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">snail007/goproxy</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span></span><br><span class="line">    <span class="attr">readinessProbe:</span></span><br><span class="line">      <span class="attr">tcpSocket:</span></span><br><span class="line">        <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">      <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">periodSeconds:</span> <span class="number">10</span></span><br><span class="line">    <span class="attr">livenessProbe:</span></span><br><span class="line">      <span class="attr">tcpSocket:</span></span><br><span class="line">        <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">      <span class="attr">initialDelaySeconds:</span> <span class="number">15</span></span><br><span class="line">      <span class="attr">periodSeconds:</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>RESTARTS</code> 可以查看到重启的次数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods</span><br><span class="line">NAME           READY   STATUS             RESTARTS   AGE</span><br><span class="line">goproxy        0/1     CrashLoopBackOff   3          93s</span><br><span class="line">webapp-f2ckt   1/1     Running            1          24h</span><br><span class="line">webapp-wsllj   1/1     Running            1          24h</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="HTTPGetAction"><a href="#HTTPGetAction" class="headerlink" title="HTTPGetAction"></a>HTTPGetAction</h3><p>通过容器的 IP 地址、端口号及路径调用 HTTP GET 方法，如果响应码(HttpStatusCode) 大于等于 200 且小于 400，则表明容器健康。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">livenessProbe:</span></span><br><span class="line">      <span class="attr">httpGet:</span></span><br><span class="line">        <span class="attr">path:</span> <span class="string">/healthz</span></span><br><span class="line">        <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">      <span class="attr">initialDelaySeconds:</span> <span class="number">15</span></span><br><span class="line">      <span class="attr">periodSeconds:</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Pod的升级"><a href="#Pod的升级" class="headerlink" title="Pod的升级"></a>Pod的升级</h1><p>Pod 升级时，使用 <code>kubectl edit xxx.yaml</code> ，将自动进行 <code>Pod</code> 升级操作。升级过程如下:</p>
+<ol>
+<li>先创建一个新的 <code>ReplicaSet</code> ，将副本设为1.</li>
+<li>老的 <code>ReplicaSet</code> 副本缩减1.</li>
+<li>重复以上过程</li>
+</ol>
+<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Pod%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0.jpg" alt="Pod滚动更新"></p>
+<h2 id="升级策略"><a href="#升级策略" class="headerlink" title="升级策略"></a>升级策略</h2><ul>
+<li>重建(Recreate): 设置 <code>spec.strategy.type=Recreate</code> 。在创建 <code>Pod</code> 的时候会先杀掉所有正在运行的 <code>Pod</code> ，然后创建新的 <code>Pod</code></li>
+<li>滚动更新(RollingUpdate): 设置 <code>spec.strategy.type=RollingUpdate</code> 。<code>Deployment</code> 会以滚动更新的方式来逐个更新 <code>Pod</code> ，配合参数 <code>spec.strategy.type.RollingUpdate.maxUnavailabel</code> 和 <code>spec.strategy.type.RollingUpdate.maxSurge</code> 可以控制滚动更新的过程。</li>
+</ul>
+<h1 id="Pod的回滚"><a href="#Pod的回滚" class="headerlink" title="Pod的回滚"></a>Pod的回滚</h1><h1 id="Pod的扩缩容"><a href="#Pod的扩缩容" class="headerlink" title="Pod的扩缩容"></a>Pod的扩缩容</h1><p><code>Pod</code> 的扩缩容其实就是维持 <code>Pod</code> 的数量，当 <code>Pod</code> 数量增加是就是<strong>扩容</strong>,当 <code>Pod</code> 数量减少时就是<strong>缩容</strong>。扩缩容有<strong>手动</strong>和<strong>自动</strong>两种方式。</p>
+<ul>
+<li>手动扩缩容：手动的去调整 <code>pod</code> 的数量。通过 <code>--replicas</code> 指定 <code>Pod</code> 的数量，也可以在 yaml 文件中调整 <code>spec.replicas</code> 的值</li>
+<li>自动扩缩容：使用者指定一些指标并指定 <code>Pod</code> 数量的范围，系统将在这个范围内自动调整 <code>Pod</code> 的数量。</li>
+</ul>
+<h2 id="手动扩缩容"><a href="#手动扩缩容" class="headerlink" title="手动扩缩容"></a>手动扩缩容</h2><ul>
+<li>命令方式</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale deployment pod_name -- replicas podNumber #通过指定 --replicase 来指定 pod 数量完成扩缩容</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>yaml 方式</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">scale</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">3</span>  <span class="comment">#指定 Pod 副本数</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">scale</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">scale</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">scale</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">limits:</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">&quot;128Mi&quot;</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">&quot;500m&quot;</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="自动扩缩容"><a href="#自动扩缩容" class="headerlink" title="自动扩缩容"></a>自动扩缩容</h2><p>自动扩缩容指标：Pod 资源使用率、Pod 自定义指标、Object 自定义指标或外部自定义指标。</p>
+<ul>
+<li><input disabled="" type="checkbox"> todo 自动扩缩容目前暂时没有场景，不深入研究。</li>
+</ul>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>自学 k8s 系列，到这里我准备暂时告一段落了，等过三个月后再回来复习复习 k8s 的内容。2021-08-24开始学习 k8s 到今天 2021-09-07 也有 15 天时间，时间也不算长。当时学习 k8s 是因为现在 k8s 实在太火了，各种大会各路大牛几乎都在提 k8s ，这么火的东西我想要了解它到底是什么(应用层面^_^)。k8s 的基本概念和一些简单操作也算是入门了，在当前的工作中也没有这方面的应用场景，所以打算暂停了，同时为了避免自己学过的东西遗忘也定下了 3 个月后再回来复习的目标。</p>
+<ul>
+<li><input disabled="" type="checkbox"> 2021-12-07 开始回来复习 k8s 的内容。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/01/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-05%E4%B9%8BService/" rel="prev" title="自学k8s系列~05之Service">
+                  <i class="fa fa-chevron-left"></i> 自学k8s系列~05之Service
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/08/%E8%87%AA%E5%AD%A6React%E7%B3%BB%E5%88%97-00%E4%B9%8B%E7%9B%AE%E5%BD%95/" rel="next" title="自学React系列~00之目录">
+                  自学React系列~00之目录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

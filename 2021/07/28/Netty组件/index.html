@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"withoutcause.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="EventLoopGroup NioEventLoopGroup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty组件">
+<meta property="og:url" content="https://withoutcause.github.io/2021/07/28/Netty%E7%BB%84%E4%BB%B6/index.html">
+<meta property="og:site_name" content="杰灵的博客">
+<meta property="og:description" content="EventLoopGroup NioEventLoopGroup">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/NioEventLoopGroup%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Bootstrap%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/NettyHandler%E9%93%BE.png">
+<meta property="og:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/ByteBuf%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png">
+<meta property="article:published_time" content="2021-07-28T08:55:04.000Z">
+<meta property="article:modified_time" content="2021-07-28T08:55:04.000Z">
+<meta property="article:author" content="杰灵">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/NioEventLoopGroup%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+
+
+<link rel="canonical" href="https://withoutcause.github.io/2021/07/28/Netty%E7%BB%84%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://withoutcause.github.io/2021/07/28/Netty%E7%BB%84%E4%BB%B6/","path":"2021/07/28/Netty组件/","title":"Netty组件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Netty组件 | 杰灵的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">杰灵的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">32</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EventLoopGroup"><span class="nav-number">1.</span> <span class="nav-text">EventLoopGroup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NioEventLoopGroup"><span class="nav-number">1.1.</span> <span class="nav-text">NioEventLoopGroup</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bootstrap"><span class="nav-number">2.</span> <span class="nav-text">Bootstrap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ServerBootstrap"><span class="nav-number">2.1.</span> <span class="nav-text">ServerBootstrap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap-1"><span class="nav-number">2.2.</span> <span class="nav-text">Bootstrap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Channel"><span class="nav-number">3.</span> <span class="nav-text">Channel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NioServerSocketChannel"><span class="nav-number">3.1.</span> <span class="nav-text">NioServerSocketChannel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NioSocketChannel"><span class="nav-number">3.2.</span> <span class="nav-text">NioSocketChannel</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Option"><span class="nav-number">4.</span> <span class="nav-text">Option</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ChildOption"><span class="nav-number">5.</span> <span class="nav-text">ChildOption</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Handler"><span class="nav-number">6.</span> <span class="nav-text">Handler</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ChannelInboundHandler"><span class="nav-number">6.1.</span> <span class="nav-text">ChannelInboundHandler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChannelOutboundHandler"><span class="nav-number">6.2.</span> <span class="nav-text">ChannelOutboundHandler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipline"><span class="nav-number">6.3.</span> <span class="nav-text">Pipline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future-amp-Promise"><span class="nav-number">6.4.</span> <span class="nav-text">Future&amp;Promise</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ByteBuf"><span class="nav-number">7.</span> <span class="nav-text">ByteBuf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ByteBuf-%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">7.1.</span> <span class="nav-text">ByteBuf 的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ByteBuf-%E7%9A%84%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">7.2.</span> <span class="nav-text">ByteBuf 的内部结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8API"><span class="nav-number">7.3.</span> <span class="nav-text">常用API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA"><span class="nav-number">7.3.1.</span> <span class="nav-text">对象创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E6%93%8D%E4%BD%9C"><span class="nav-number">7.3.2.</span> <span class="nav-text">指针操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-number">7.3.3.</span> <span class="nav-text">数据读写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">7.3.4.</span> <span class="nav-text">内存管理</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">杰灵</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://withoutcause.github.io/2021/07/28/Netty%E7%BB%84%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="杰灵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Netty组件 | 杰灵的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Netty组件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-28 16:55:04" itemprop="dateCreated datePublished" datetime="2021-07-28T16:55:04+08:00">2021-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="EventLoopGroup"><a href="#EventLoopGroup" class="headerlink" title="EventLoopGroup"></a>EventLoopGroup</h1><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/NioEventLoopGroup%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" alt="NioEventLoopGroup继承关系"></p>
+<h2 id="NioEventLoopGroup"><a href="#NioEventLoopGroup" class="headerlink" title="NioEventLoopGroup"></a>NioEventLoopGroup</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EventLoopGroup boss = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line">EventLoopGroup worker = <span class="keyword">new</span> NioEventLoopGroup();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建的 boss 和 worker 就是 NioEventLoopGroup</li>
+</ul>
+<h1 id="Bootstrap"><a href="#Bootstrap" class="headerlink" title="Bootstrap"></a>Bootstrap</h1><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/Bootstrap%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" alt="Bootstrap继承关系"></p>
+<h2 id="ServerBootstrap"><a href="#ServerBootstrap" class="headerlink" title="ServerBootstrap"></a>ServerBootstrap</h2><ul>
+<li>服务端引导器</li>
+</ul>
+<h2 id="Bootstrap-1"><a href="#Bootstrap-1" class="headerlink" title="Bootstrap"></a>Bootstrap</h2><ul>
+<li>客户端引导器</li>
+</ul>
+<p>引导器的作用主要作用:</p>
+<ul>
+<li>boss 和 worker 的指定</li>
+<li>设置 Channel 类型</li>
+<li>Handler 设置</li>
+<li>TCP 参数设置</li>
+<li>端口绑定</li>
+</ul>
+<h1 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h1><h2 id="NioServerSocketChannel"><a href="#NioServerSocketChannel" class="headerlink" title="NioServerSocketChannel"></a>NioServerSocketChannel</h2><ul>
+<li>服务端 Channel 类型</li>
+</ul>
+<h2 id="NioSocketChannel"><a href="#NioSocketChannel" class="headerlink" title="NioSocketChannel"></a>NioSocketChannel</h2><ul>
+<li>客户端 Channel 类型</li>
+</ul>
+<h1 id="Option"><a href="#Option" class="headerlink" title="Option"></a>Option</h1><ul>
+<li>为 <code>boss</code> 设置 TCP 参数</li>
+</ul>
+<h1 id="ChildOption"><a href="#ChildOption" class="headerlink" title="ChildOption"></a>ChildOption</h1><ul>
+<li>为 <code>worker</code> 设置 TCP 参数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SO_KEEPALIVE</td>
+<td>设置为 true 代表启用了 TCP SO_KEEPALIVE 属性，TCP 会主动探测连接状态，即连接保活</td>
+</tr>
+<tr>
+<td>SO_BACKLOG</td>
+<td>已完成三次握手的请求队列最大长度，同一时刻服务端可能会处理多个连接，在高并发海量连接的场景下，该参数应适当调大</td>
+</tr>
+<tr>
+<td>TCP_NODELAY</td>
+<td>Netty 默认是 true，表示立即发送数据。如果设置为 false 表示启用 Nagle 算法，该算法会将 TCP 网络数据包累积到一定量才会发送，虽然可以减少报文发送的数量，但是会造成一定的数据延迟。Netty 为了最小化数据传输的延迟，默认禁用了 Nagle 算法</td>
+</tr>
+<tr>
+<td>SO_SNDBUF</td>
+<td>TCP 数据发送缓冲区大小</td>
+</tr>
+<tr>
+<td>SO_RCVBUF</td>
+<td>TCP数据接收缓冲区大小，TCP数据接收缓冲区大小</td>
+</tr>
+<tr>
+<td>SO_LINGER</td>
+<td>设置延迟关闭的时间，等待缓冲区中的数据发送完成</td>
+</tr>
+<tr>
+<td>CONNECT_TIMEOUT_MILLIS</td>
+<td>建立连接的超时时间</td>
+</tr>
+</tbody></table>
+<h1 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h1><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/NettyHandler%E9%93%BE.png"></p>
+<h2 id="ChannelInboundHandler"><a href="#ChannelInboundHandler" class="headerlink" title="ChannelInboundHandler"></a>ChannelInboundHandler</h2><p>入站处理器</p>
+<h2 id="ChannelOutboundHandler"><a href="#ChannelOutboundHandler" class="headerlink" title="ChannelOutboundHandler"></a>ChannelOutboundHandler</h2><p>出站处理器</p>
+<h2 id="Pipline"><a href="#Pipline" class="headerlink" title="Pipline"></a>Pipline</h2><h2 id="Future-amp-Promise"><a href="#Future-amp-Promise" class="headerlink" title="Future&amp;Promise"></a>Future&amp;Promise</h2><h1 id="ByteBuf"><a href="#ByteBuf" class="headerlink" title="ByteBuf"></a>ByteBuf</h1><h2 id="ByteBuf-的分类"><a href="#ByteBuf-的分类" class="headerlink" title="ByteBuf 的分类"></a>ByteBuf 的分类</h2><ul>
+<li><p>池化/非池化的 ByteBuf</p>
+</li>
+<li><p>直接内存/堆内存的 ByteBuf</p>
+</li>
+<li><p>Unsafe/非Unsafe的ByteBuf</p>
+</li>
+</ul>
+<h2 id="ByteBuf-的内部结构"><a href="#ByteBuf-的内部结构" class="headerlink" title="ByteBuf 的内部结构"></a>ByteBuf 的内部结构</h2><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/ByteBuf%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png" alt="ByteBuf内部结构"></p>
+<ul>
+<li>readerIndex : 读指针</li>
+<li>writrerIndexer : 写指针</li>
+<li>maxCapactity : 最大容量</li>
+</ul>
+<h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><h3 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h3><ul>
+<li>Unpooled</li>
+<li>Pooled</li>
+</ul>
+<h3 id="指针操作"><a href="#指针操作" class="headerlink" title="指针操作"></a>指针操作</h3><ul>
+<li>readerIndex</li>
+<li>resetReaderIndex</li>
+<li>markReaderIndex</li>
+<li>writerIndex</li>
+<li>resetWriterIndex</li>
+<li>markWriterIndex</li>
+<li>setIndex</li>
+</ul>
+<h3 id="数据读写"><a href="#数据读写" class="headerlink" title="数据读写"></a>数据读写</h3><ul>
+<li><p>isReadable</p>
+</li>
+<li><p>isReadOnly</p>
+</li>
+<li><p>asReadOnly</p>
+</li>
+<li><p>readableBytes</p>
+</li>
+<li><p>readBytes</p>
+</li>
+<li><p>readSlice</p>
+</li>
+<li><p>readRetainedSlice</p>
+</li>
+<li><p>readType</p>
+<ul>
+<li><p>readByte()</p>
+</li>
+<li><p>readChar()</p>
+</li>
+<li><p>readBoolean()</p>
+</li>
+<li><p>readShort()</p>
+</li>
+<li><p>readInt()</p>
+</li>
+<li><p>readLong()</p>
+</li>
+<li><p>readFloat()</p>
+</li>
+<li><p>readDouble()</p>
+</li>
+</ul>
+</li>
+<li><p>isWritable()</p>
+</li>
+<li><p>writeBytes(ByteBuf src)</p>
+</li>
+<li><p>writeCharSequence(CharSequence sequence, Charset charset)</p>
+</li>
+<li><p>writeType</p>
+<ul>
+<li>writeBoolean(boolean value)</li>
+<li>writeByte(int value)</li>
+<li>writeShort(int value)</li>
+<li>writeInt(int value)</li>
+<li>writeLong(long value)</li>
+<li>writeChar(int value)</li>
+<li>writeFloat(float value)</li>
+<li>writeDouble(double value)</li>
+</ul>
+</li>
+</ul>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><ul>
+<li>refCnt()</li>
+<li>retain()<ul>
+<li>retain(int increment)</li>
+</ul>
+</li>
+<li>touch()<ul>
+<li>touch(Object hint)</li>
+</ul>
+</li>
+<li>release()<ul>
+<li>release(int decrement)</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Netty/" rel="tag"># Netty</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/28/Reactor%E6%A8%A1%E5%9E%8B/" rel="prev" title="Reactor模型">
+                  <i class="fa fa-chevron-left"></i> Reactor模型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/30/Netty%E4%B9%8BHelloWorld/" rel="next" title="Netty之HelloWorld">
+                  Netty之HelloWorld <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杰灵</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
