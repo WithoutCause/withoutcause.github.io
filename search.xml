@@ -1691,7 +1691,13 @@
   <entry>
     <title>自学k8s系列~00之目录</title>
     <url>/2021/08/24/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-00%E4%B9%8B%E7%9B%AE%E5%BD%95/</url>
-    <content><![CDATA[<p> <a href="/2021/08/24/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-01%E4%B9%8Bk8s%E6%98%AF%E4%BB%80%E4%B9%88/">自学k8s系列-01之k8s是什么</a></p>
+    <content><![CDATA[<p>2024-01-31 10:25:35，准备重启 K8s 相关博客写作。后面的内容：</p>
+<ul>
+<li>K8s 架构</li>
+<li>K8s 网络原理</li>
+<li>K8s 的调试</li>
+</ul>
+<p> <a href="/2021/08/24/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-01%E4%B9%8Bk8s%E6%98%AF%E4%BB%80%E4%B9%88/">自学k8s系列-01之k8s是什么</a></p>
 <p> <a href="/2021/08/24/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-02%E4%B9%8Bk8s%E4%B8%BB%E8%A6%81%E6%A6%82%E5%BF%B5/">自学k8s系列-02之k8s主要概念</a> </p>
 <p> <a href="/2021/08/26/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-03%E4%B9%8BYAML/">自学k8s系列-03之YAML</a> </p>
 <p> <a href="/2021/08/28/%E8%87%AA%E5%AD%A6k8s%E7%B3%BB%E5%88%97-04%E4%B9%8BPod/">自学k8s系列-04之Pod</a> </p>
