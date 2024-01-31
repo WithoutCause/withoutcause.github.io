@@ -147,7 +147,7 @@
 <li><code>Command + N, Control + Enter, Control + N</code> 生成代码（getter、setter、构造函数、hashCode/equals,toString）</li>
 <li><code>Control + O</code> 覆盖方法（重写父类方法）</li>
 <li><code>Control + I</code> 实现方法（实现接口中的方法）</li>
-<li><code>Command + OptionT</code> 包围代码（使用iF..else, try..catch, For, synchronized等包围选中的代码）</li>
+<li><code>Command + Option + T</code> 包围代码（使用iF..else, try..catch, For, synchronized等包围选中的代码）</li>
 <li><code>Command + /</code> 注释/取消注释与行注释</li>
 <li><code>Command + Option/</code> 注释/取消注释与块注释</li>
 <li><code>Option + ↑</code> 连续选中代码块</li>
@@ -774,7 +774,7 @@
 <li>fix：修补bug</li>
 <li>docs：文档（documentation）</li>
 <li>style： 格式（不影响代码运行的变动）</li>
-<li>refactor：重构（即不是新增功能，也不是修改bug的代码变动）</li>
+<li>   refactor：重构（即不是新增功能，也不是修改bug的代码变动）</li>
 <li>test：增加测试</li>
 <li>chore：构建过程或辅助工具的变动</li>
 <li>perf: 性能提升变更</li>
@@ -1135,9 +1135,7 @@
 <li>基于上面几点原因，我们决定开发一个专门的对接中心，负责对接上所有的第三方系统，内部系统只与对接中心对接。</li>
 </ol>
 <p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83.png" alt="image-20211122221846176"></p>
-<pre><code># 架构设计
-</code></pre>
-<p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" alt="image-20211124200958151"></p>
+<h1 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h1><p><img src="https://sjl-picture.oss-cn-shanghai.aliyuncs.com/img/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.png" alt="image-20211124200958151"></p>
 ]]></content>
       <categories>
         <category>项目实践</category>
